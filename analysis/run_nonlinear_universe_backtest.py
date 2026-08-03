@@ -244,10 +244,20 @@ def fit_one_model_pair(train: pd.DataFrame, feature_cols: list[str], suffix: str
 
 def fit_models(train: pd.DataFrame):
     missing = [f + "_missing" for f in FACTOR_FEATURES]
-    return {
+    models = {
         "factor": fit_one_model_pair(train, FACTOR_FEATURES + missing, "factor_only"),
         "size": fit_one_model_pair(train, SIZE_FEATURES + missing, "with_size"),
     }
+    bucket_train = train.dropna(subset=["value", "rev_fy1", "target_rank"]).copy()
+    bucket_train["value_bin"] = np.ceil(bucket_train["value"].clip(0.000001, 1.0) * 5).astype(int)
+    bucket_train["revision_bin"] = np.ceil(bucket_train["rev_fy1"].clip(0.000001, 1.0) * 5).astype(int)
+    stats = bucket_train.groupby(["value_bin", "revision_bin"])["target_rank"].agg(["mean", "count"])
+    prior_n = 500
+    models["bucket_map"] = {
+        (int(v), int(r)): float((row["mean"] * row["count"] + 0.5 * prior_n) / (row["count"] + prior_n))
+        for (v, r), row in stats.iterrows()
+    }
+    return models
 
 
 def apply_scores(df: pd.DataFrame, models) -> pd.DataFrame:
@@ -271,32 +281,44 @@ def apply_scores(df: pd.DataFrame, models) -> pd.DataFrame:
     x["score_revision_first_floor"] = x["rev_fy1"].where(
         (x["rev_fy1"] >= 0.80) & (x["value"] >= 0.40)
     )
-    for model_key, spec in models.items():
+    x["value_bin"] = np.ceil(x["value"].clip(0.000001, 1.0) * 5)
+    x["revision_bin"] = np.ceil(x["rev_fy1"].clip(0.000001, 1.0) * 5)
+    x["score_bucket_lookup"] = [
+        models["bucket_map"].get((int(v), int(r)), np.nan) if pd.notna(v) and pd.notna(r) else np.nan
+        for v, r in zip(x["value_bin"], x["revision_bin"])
+    ]
+    for model_key in ("factor", "size"):
+        spec = models[model_key]
         cols = spec["feature_cols"]
         x[f"score_tree_{model_key}"] = spec["tree"].predict(model_x[cols])
         x[f"score_hgb_{model_key}"] = spec["hgb"].predict(model_x[cols])
+    factor_complete = x[["per", "pbr", "rev_fy1", "rev_12mf"]].notna().all(axis=1)
+    x.loc[~factor_complete, ["score_tree_factor", "score_hgb_factor"]] = np.nan
     return x
 
 
-STRATEGIES = {
-    "LINEAR_VALUE": "score_linear_value",
-    "DOUBLE_CHEAP_AND": "score_double_cheap",
-    "VALUE_REVISION_GATE": "score_value_revision_gate",
-    "VALUE_REVISION_VETO": "score_revision_veto",
-    "DEEP_VALUE_TURNAROUND": "score_deep_value_turnaround",
-    "REVISION_FIRST_FLOOR": "score_revision_first_floor",
-    "TREE_FACTOR_ONLY": "score_tree_factor",
-    "HGB_FACTOR_ONLY": "score_hgb_factor",
-    "TREE_WITH_SIZE": "score_tree_size",
-    "HGB_WITH_SIZE": "score_hgb_size",
+STRATEGY_SPECS = {
+    "LINEAR_VALUE": {"score": "score_linear_value", "required": ["per", "pbr"], "selection": "top20"},
+    "DOUBLE_CHEAP_AND": {"score": "score_double_cheap", "required": ["per", "pbr"], "selection": "gate_all"},
+    "VALUE_REVISION_GATE": {"score": "score_value_revision_gate", "required": ["per", "pbr", "rev_fy1"], "selection": "gate_all"},
+    "VALUE_REVISION_VETO": {"score": "score_revision_veto", "required": ["per", "pbr", "rev_fy1", "rev_12mf"], "selection": "gate_all"},
+    "DEEP_VALUE_TURNAROUND": {"score": "score_deep_value_turnaround", "required": ["per", "pbr", "rev_fy1"], "selection": "gate_all"},
+    "REVISION_FIRST_FLOOR": {"score": "score_revision_first_floor", "required": ["per", "pbr", "rev_fy1"], "selection": "gate_all"},
+    "TRAIN_BUCKET_LOOKUP": {"score": "score_bucket_lookup", "required": ["per", "pbr", "rev_fy1"], "selection": "top20"},
+    "TREE_FACTOR_ONLY": {"score": "score_tree_factor", "required": ["per", "pbr", "rev_fy1", "rev_12mf"], "selection": "top20"},
+    "HGB_FACTOR_ONLY": {"score": "score_hgb_factor", "required": ["per", "pbr", "rev_fy1", "rev_12mf"], "selection": "top20"},
+    "TREE_WITH_SIZE": {"score": "score_tree_size", "required": [], "selection": "top20"},
+    "HGB_WITH_SIZE": {"score": "score_hgb_size", "required": [], "selection": "top20"},
 }
 
 
-def choose_holdings(df: pd.DataFrame, score_col: str) -> pd.DataFrame:
+def choose_holdings(df: pd.DataFrame, score_col: str, selection: str) -> pd.DataFrame:
     eligible = df.dropna(subset=[score_col, "y"]).copy()
     if len(eligible) < MIN_NAMES:
         return eligible.iloc[0:0]
-    n = max(MIN_NAMES, int(math.ceil(len(df) * 0.20)))
+    if selection == "gate_all":
+        return eligible
+    n = max(MIN_NAMES, int(math.ceil(len(eligible) * 0.20)))
     return eligible.nlargest(min(n, len(eligible)), score_col)
 
 
@@ -318,24 +340,29 @@ def summarize_periods(periods: pd.DataFrame) -> pd.DataFrame:
     scale = 252 / HORIZON
     for (univ, strat), g in periods.groupby(["universe", "strategy"]):
         g = g.sort_values("date")
-        ex, gross = g["excess_net"], g["excess_gross"]
-        sd = ex.std(ddof=1)
+        ea = g["excess_all_net"]
+        ee = g["excess_eligible_net"]
+        sd_all = ea.std(ddof=1)
+        sd_el = ee.std(ddof=1)
         rows.append({
             "universe": univ, "strategy": strat, "n_periods": len(g),
             "first_test_date": g["date"].min().date().isoformat(),
             "last_test_date": g["date"].max().date().isoformat(),
             "avg_universe_names": g["universe_n"].mean(),
+            "avg_eligible_names": g["eligible_n"].mean(),
             "avg_selected_names": g["selected_n"].mean(),
             "avg_turnover": g["turnover"].mean(),
             "avg_20d_port_return": g["portfolio_return"].mean(),
-            "avg_20d_benchmark_return": g["benchmark_return"].mean(),
-            "avg_20d_excess_gross": gross.mean(),
-            "avg_20d_excess_net30bp": ex.mean(),
-            "annualized_excess_net30bp": ex.mean() * scale,
-            "sharpe_excess_net30bp": ex.mean() / sd * math.sqrt(scale) if sd > 0 else np.nan,
-            "tstat_excess_net30bp": ex.mean() / (sd / math.sqrt(len(ex))) if sd > 0 else np.nan,
-            "win_rate_excess_net30bp": (ex > 0).mean(),
-            "max_drawdown_excess_net30bp": max_drawdown(ex),
+            "avg_20d_excess_all_net30bp": ea.mean(),
+            "annualized_excess_all_net30bp": ea.mean() * scale,
+            "sharpe_excess_all_net30bp": ea.mean() / sd_all * math.sqrt(scale) if sd_all > 0 else np.nan,
+            "tstat_excess_all_net30bp": ea.mean() / (sd_all / math.sqrt(len(ea))) if sd_all > 0 else np.nan,
+            "avg_20d_excess_eligible_net30bp": ee.mean(),
+            "annualized_excess_eligible_net30bp": ee.mean() * scale,
+            "sharpe_excess_eligible_net30bp": ee.mean() / sd_el * math.sqrt(scale) if sd_el > 0 else np.nan,
+            "tstat_excess_eligible_net30bp": ee.mean() / (sd_el / math.sqrt(len(ee))) if sd_el > 0 else np.nan,
+            "win_rate_excess_eligible_net30bp": (ee > 0).mean(),
+            "max_drawdown_excess_eligible_net30bp": max_drawdown(ee),
         })
     return pd.DataFrame(rows)
 
@@ -397,7 +424,8 @@ def main():
     models = fit_models(train)
     importance_rows = []
     tree_texts = []
-    for model_key, spec in models.items():
+    for model_key in ("factor", "size"):
+        spec = models[model_key]
         rules = export_text(spec["tree"], feature_names=spec["feature_cols"], decimals=3)
         (OUT / f"tree_rules_{model_key}.txt").write_text(rules, encoding="utf-8")
         tree_texts += [f"## {model_key}", "", "```", rules, "```", ""]
@@ -411,15 +439,19 @@ def main():
     prev_holdings = {}
     test_panels = {dt: p for dt, p in panels.items() if dt >= split_date}
     for dt, raw in test_panels.items():
-        masks = universe_masks(raw)
-        for univ, mask in masks.items():
+        for univ, mask in universe_masks(raw).items():
             base = raw[mask].copy()
             if len(base) < 30:
                 continue
             scored = apply_scores(base, models)
-            benchmark = scored["y"].dropna().mean()
-            for strat, score_col in STRATEGIES.items():
-                held = choose_holdings(scored, score_col)
+            benchmark_all = scored["y"].dropna().mean()
+            for strat, spec in STRATEGY_SPECS.items():
+                score_col = spec["score"]
+                required = spec["required"]
+                eligible_benchmark = scored.dropna(subset=required + ["y"]) if required else scored.dropna(subset=["y"])
+                if len(eligible_benchmark) < MIN_NAMES:
+                    continue
+                held = choose_holdings(scored, score_col, spec["selection"])
                 if len(held) < MIN_NAMES:
                     continue
                 key = (univ, strat)
@@ -427,12 +459,20 @@ def main():
                 turnover = equal_weight_turnover(prev_holdings.get(key, set()), cur)
                 prev_holdings[key] = cur
                 port_ret = held["y"].mean()
-                excess = port_ret - benchmark
-                periods.append({"date": dt, "universe": univ, "strategy": strat,
-                    "universe_n": len(scored), "selected_n": len(held), "turnover": turnover,
-                    "portfolio_return": port_ret, "benchmark_return": benchmark,
-                    "excess_gross": excess, "cost": turnover * ONE_WAY_COST,
-                    "excess_net": excess - turnover * ONE_WAY_COST})
+                benchmark_eligible = eligible_benchmark["y"].mean()
+                excess_all = port_ret - benchmark_all
+                excess_eligible = port_ret - benchmark_eligible
+                cost = turnover * ONE_WAY_COST
+                periods.append({
+                    "date": dt, "universe": univ, "strategy": strat,
+                    "universe_n": len(scored), "eligible_n": len(eligible_benchmark),
+                    "selected_n": len(held), "turnover": turnover,
+                    "portfolio_return": port_ret, "benchmark_all_return": benchmark_all,
+                    "benchmark_eligible_return": benchmark_eligible,
+                    "excess_all_gross": excess_all, "excess_all_net": excess_all - cost,
+                    "excess_eligible_gross": excess_eligible,
+                    "excess_eligible_net": excess_eligible - cost, "cost": cost,
+                })
     periods = pd.DataFrame(periods).sort_values(["universe", "strategy", "date"])
     periods.to_csv(OUT / "strategy_period_returns.csv", index=False, encoding="utf-8-sig")
     summary = summarize_periods(periods)
@@ -442,7 +482,7 @@ def main():
     coverage = coverage_summary(test_panels)
     coverage.to_csv(OUT / "universe_factor_coverage.csv", index=False, encoding="utf-8-sig")
 
-    top = summary.sort_values(["universe", "sharpe_excess_net30bp"], ascending=[True, False])
+    top = summary.sort_values(["universe", "sharpe_excess_eligible_net30bp"], ascending=[True, False])
     lines = ["# Nonlinear and conditional factor strategy backtest", "",
         f"- Data dates: {ret.index.min().date()} to {ret.index.max().date()}",
         f"- Rebalance/holding interval: every {REB_FREQ} trading days / {HORIZON}-day forward return",
@@ -451,11 +491,13 @@ def main():
         "- Factor percentile ranks recalculated inside each tested universe",
         "- Market-cap percentile remains the absolute ALL-universe percentile when models transfer across universes",
         "- Cost assumption: 30 bp per one-way turnover, deducted from strategy excess",
-        "- Rules/thresholds specified before this run's test results; tree/HGB fit on train only", "",
+        "- Primary alpha metric is excess versus the factor-eligible subset; excess versus the full universe is also reported",
+        "- Score models select the top 20% of eligible names; hard-gated rules hold all names passing the gate",
+        "- Rules/thresholds specified before this run's test results; tree/HGB/bucket lookup fit on train only", "",
         "## Factor coverage by universe", "", coverage.to_markdown(index=False), "",
         "## Best strategies by universe", ""]
     for univ in sorted(top["universe"].unique()):
-        lines += [f"### {univ}", "", top[top["universe"] == univ].head(10).to_markdown(index=False), ""]
+        lines += [f"### {univ}", "", top[top["universe"] == univ].head(11).to_markdown(index=False), ""]
     lines += ["## Learned shallow trees", ""] + tree_texts
     (OUT / "summary_nonlinear.md").write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines))
