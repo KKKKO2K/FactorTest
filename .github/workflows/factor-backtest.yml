@@ -1,0 +1,32 @@
+name: factor-backtest
+
+on:
+  push:
+    branches:
+      - analysis/factor-backtest
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pandas numpy scipy tabulate
+      - name: Run factor backtest
+        run: python analysis/run_factor_backtest.py
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: factor-backtest-results
+          path: analysis/results
+          if-no-files-found: warn
