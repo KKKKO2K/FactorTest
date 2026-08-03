@@ -18,6 +18,12 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Show factor data structure
+        run: |
+          echo '=== DIRECTORIES ==='
+          find source/factor_all_values -maxdepth 5 -type d | sort | head -400
+          echo '=== FILES ==='
+          find source/factor_all_values -maxdepth 5 -type f | sort | head -300
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
