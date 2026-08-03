@@ -18,19 +18,15 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Show factor data structure
-        run: |
-          echo '=== DIRECTORIES ==='
-          find source/factor_all_values -maxdepth 5 -type d | sort | head -400
-          echo '=== FILES ==='
-          find source/factor_all_values -maxdepth 5 -type f | sort | head -300
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy scipy tabulate
       - name: Run factor backtest
-        run: python analysis/run_factor_backtest.py
+        run: |
+          sed -i 's/for folder in sorted(p for p in SNAP.iterdir() if p.is_dir())/for folder in sorted(p for p in SNAP.parent.iterdir() if p.is_dir())/' analysis/run_factor_backtest.py
+          python analysis/run_factor_backtest.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
