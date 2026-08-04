@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - analysis/conditional-factor-combos
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
