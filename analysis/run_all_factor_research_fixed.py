@@ -14,4 +14,8 @@ source = source.replace(
     "single_rows, selected_rows, result_rows, yearly_rows, importance_rows, rules = [], [], [], [], []",
     "single_rows, selected_rows, result_rows, yearly_rows, importance_rows, rules = [], [], [], [], [], {}",
 )
+source = source.replace(
+    "pd.concat(importance_rows, ignore_index=True).to_csv",
+    "(pd.concat(importance_rows, ignore_index=True) if importance_rows else pd.DataFrame()).to_csv",
+)
 exec(compile(source, str(Path(__file__).with_name("run_all_factor_research_source.py")), "exec"))
