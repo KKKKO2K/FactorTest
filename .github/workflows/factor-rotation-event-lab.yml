@@ -15,7 +15,7 @@ permissions:
 jobs:
   research:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,10 +25,14 @@ jobs:
         run: python -m pip install --upgrade pip pandas numpy tabulate
       - name: Run conditional factor rotation and event lab
         run: python analysis/factor_rotation_event_lab_fixed.py
+      - name: Run stock attribution and outlier diagnostics
+        run: python analysis/factor_strategy_attribution.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: factor-rotation-event-results
-          path: analysis/factor_rotation_event_results
+          name: factor-rotation-event-and-attribution-results
+          path: |
+            analysis/factor_rotation_event_results
+            analysis/factor_strategy_attribution_results
           if-no-files-found: warn
