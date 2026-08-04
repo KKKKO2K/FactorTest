@@ -15,7 +15,7 @@ permissions:
 jobs:
   research:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,14 +25,14 @@ jobs:
         run: python -m pip install --upgrade pip pandas numpy scipy scikit-learn tabulate
       - name: Inventory factors
         run: python analysis/inventory_all_factors.py
-      - name: Run focused all-factor strategy research
-        run: python analysis/run_all_factor_research_fast.py
+      - name: Run vectorized period research
+        run: python analysis/run_all_factor_period_fast.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: all-factor-research-focused-results
+          name: all-factor-period-results
           path: |
             analysis/all_factor_inventory
-            analysis/all_factor_results
+            analysis/all_factor_fast_results
           if-no-files-found: warn
