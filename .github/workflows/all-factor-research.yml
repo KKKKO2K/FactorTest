@@ -26,8 +26,7 @@ jobs:
       - name: Inventory factors
         run: python analysis/inventory_all_factors.py
       - name: Run all-factor strategy research
-        if: ${{ hashFiles('analysis/run_all_factor_research.py') != '' }}
-        run: python analysis/run_all_factor_research.py
+        run: python analysis/run_all_factor_research_fixed.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
