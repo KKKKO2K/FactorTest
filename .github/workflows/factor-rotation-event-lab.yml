@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy tabulate
       - name: Run conditional factor rotation and event lab
-        run: python analysis/factor_rotation_event_lab.py
+        run: python analysis/factor_rotation_event_lab_fixed.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
