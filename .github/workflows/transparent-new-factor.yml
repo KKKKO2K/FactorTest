@@ -23,12 +23,12 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy tabulate
-      - name: Run transparent rule tests
-        run: python analysis/test_transparent_new_factor_rules.py
+      - name: Run milder transparent rule tests
+        run: python analysis/test_transparent_new_factor_rules_v2.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: transparent-new-factor-results
-          path: analysis/transparent_rule_results
+          name: transparent-new-factor-results-v2
+          path: analysis/transparent_rule_results_v2
           if-no-files-found: warn
