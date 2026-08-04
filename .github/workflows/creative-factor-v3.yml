@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - analysis/creative-factor-v3
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
