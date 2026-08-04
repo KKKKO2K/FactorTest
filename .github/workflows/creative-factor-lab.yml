@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy tabulate
       - name: Run creative factor lab
-        run: python analysis/creative_factor_lab.py
+        run: python analysis/creative_factor_lab_fixed.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
