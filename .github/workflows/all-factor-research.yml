@@ -21,5 +21,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Inspect embedded source
-        run: python analysis/inspect_all_factor_source.py
+      - name: Decode embedded source
+        run: python analysis/decode_all_factor_source.py
+      - name: Upload decoded source
+        uses: actions/upload-artifact@v4
+        with:
+          name: decoded-all-factor-source
+          path: analysis/decoded_all_factor_source.py
