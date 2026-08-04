@@ -15,7 +15,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,10 +25,14 @@ jobs:
         run: python -m pip install --upgrade pip pandas numpy tabulate yfinance
       - name: Run enhanced K200 allocation test
         run: python analysis/enhanced_k200_allocation_test.py
+      - name: Run actual-index core satellite test
+        run: python analysis/index_core_satellite_test.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: enhanced-k200-allocation-results
-          path: analysis/enhanced_k200_results
+          path: |
+            analysis/enhanced_k200_results
+            analysis/index_core_satellite_results
           if-no-files-found: warn
