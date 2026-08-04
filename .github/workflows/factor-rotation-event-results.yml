@@ -1,0 +1,34 @@
+name: factor-rotation-event-results
+
+on:
+  push:
+    branches:
+      - analysis/conditional-factor-combos
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: ${{ !contains(github.event.head_commit.message, '[results]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: analysis/conditional-factor-combos
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pandas numpy tabulate
+      - name: Run conditional factor rotation and event lab
+        run: python analysis/factor_rotation_event_lab.py
+      - name: Commit result tables to analysis branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add analysis/factor_rotation_event_results
+          git commit -m "[results] Add factor rotation and event lab outputs" || exit 0
+          git push origin HEAD:analysis/conditional-factor-combos
