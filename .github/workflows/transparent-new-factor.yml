@@ -1,0 +1,31 @@
+name: transparent-new-factor
+
+on:
+  push:
+    branches:
+      - analysis/all-factors-v2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pandas numpy tabulate
+      - name: Run transparent rule tests
+        run: python analysis/test_transparent_new_factor_rules.py
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transparent-new-factor-results
+          path: analysis/transparent_rule_results
+          if-no-files-found: warn
