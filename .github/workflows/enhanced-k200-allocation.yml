@@ -3,7 +3,6 @@ name: enhanced-k200-allocation
 on:
   push:
     branches:
-      - analysis/enhanced-k200-allocation
       - analysis/k200-off-engine-lab
   pull_request:
     branches:
@@ -16,7 +15,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,22 +23,12 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy tabulate yfinance
-      - name: Run enhanced K200 allocation test
-        run: python analysis/enhanced_k200_allocation_test.py
-      - name: Run actual-index core satellite test
-        run: python analysis/index_core_satellite_test.py
-      - name: Run K200 OFF-engine lab
-        run: python analysis/k200_off_engine_lab_fixed.py
       - name: Export current recommendation
         run: python analysis/k200_current_recommendation.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: enhanced-k200-allocation-results
-          path: |
-            analysis/enhanced_k200_results
-            analysis/index_core_satellite_results
-            analysis/k200_off_engine_results
-            analysis/k200_current_recommendation
+          name: k200-current-recommendation
+          path: analysis/k200_current_recommendation
           if-no-files-found: warn
