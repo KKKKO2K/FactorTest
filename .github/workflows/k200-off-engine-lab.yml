@@ -1,0 +1,31 @@
+name: k200-off-engine-lab
+
+on:
+  push:
+    branches:
+      - analysis/k200-off-engine-lab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pandas numpy tabulate yfinance
+      - name: Run K200 OFF-engine lab
+        run: python analysis/k200_off_engine_lab.py
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k200-off-engine-results
+          path: analysis/k200_off_engine_results
+          if-no-files-found: warn
