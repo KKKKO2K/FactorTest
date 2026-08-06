@@ -1,0 +1,1 @@
+All weights are target portfolio weights. `current_status.csv` records the latest snapshot date and selected engine. `current_holding_factor_details.csv` contains factor components for each selected stock.
