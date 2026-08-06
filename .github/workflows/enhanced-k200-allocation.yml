@@ -30,6 +30,8 @@ jobs:
         run: python analysis/index_core_satellite_test.py
       - name: Run K200 OFF-engine lab
         run: python analysis/k200_off_engine_lab_fixed.py
+      - name: Export current recommendation
+        run: python analysis/k200_current_recommendation.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
@@ -39,4 +41,5 @@ jobs:
             analysis/enhanced_k200_results
             analysis/index_core_satellite_results
             analysis/k200_off_engine_results
+            analysis/k200_current_recommendation
           if-no-files-found: warn
