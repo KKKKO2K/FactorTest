@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy tabulate yfinance
       - name: Export current recommendation
-        run: python analysis/k200_current_recommendation.py
+        run: python analysis/k200_current_recommendation_latest.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
