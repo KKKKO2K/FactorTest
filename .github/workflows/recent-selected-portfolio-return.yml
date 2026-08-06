@@ -1,0 +1,30 @@
+name: recent-selected-portfolio-return
+
+on:
+  push:
+    branches:
+      - analysis/k200-off-engine-lab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  calculate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pandas numpy yfinance
+      - name: Calculate realized portfolio return
+        run: python analysis/recent_selected_portfolio_return.py
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: recent-selected-portfolio-return
+          path: analysis/recent_selected_portfolio_return
+          if-no-files-found: error
