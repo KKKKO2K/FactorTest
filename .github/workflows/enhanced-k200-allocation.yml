@@ -29,7 +29,7 @@ jobs:
       - name: Run actual-index core satellite test
         run: python analysis/index_core_satellite_test.py
       - name: Run K200 OFF-engine lab
-        run: python analysis/k200_off_engine_lab.py
+        run: python analysis/k200_off_engine_lab_fixed.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
