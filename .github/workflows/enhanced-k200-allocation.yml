@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - analysis/enhanced-k200-allocation
+      - analysis/k200-off-engine-lab
   pull_request:
     branches:
       - main
@@ -15,7 +16,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -27,6 +28,8 @@ jobs:
         run: python analysis/enhanced_k200_allocation_test.py
       - name: Run actual-index core satellite test
         run: python analysis/index_core_satellite_test.py
+      - name: Run K200 OFF-engine lab
+        run: python analysis/k200_off_engine_lab.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
@@ -35,4 +38,5 @@ jobs:
           path: |
             analysis/enhanced_k200_results
             analysis/index_core_satellite_results
+            analysis/k200_off_engine_results
           if-no-files-found: warn
