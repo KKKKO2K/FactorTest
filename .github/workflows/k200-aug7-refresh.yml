@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy tabulate yfinance requests
       - name: Run Aug 7 refresh
-        run: python analysis/k200_aug7_refresh_fixed6.py
+        run: python analysis/k200_aug7_refresh_fixed7.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
