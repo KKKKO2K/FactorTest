@@ -1,0 +1,1 @@
+Research-only refresh using latest main factor snapshots through 2026-08-07. Do not merge.
