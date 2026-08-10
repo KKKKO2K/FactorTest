@@ -6,7 +6,6 @@ on:
       - research/factor-lab-v2
     paths:
       - research/liquidity_cross_factor/run_multi_universe_liquidity.py
-      - .github/workflows/liquidity-multi-universe.yml
   workflow_dispatch:
 
 permissions:
@@ -26,12 +25,19 @@ jobs:
       - run: python -m pip install --upgrade numpy pandas
       - name: Run multi-universe liquidity research
         run: python research/liquidity_cross_factor/run_multi_universe_liquidity.py
-      - name: Commit outputs
+      - name: Commit compact outputs
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add research/liquidity_cross_factor/results_multi_universe/
+          rm -f research/liquidity_cross_factor/results_multi_universe/periods.csv
+          git add \
+            research/liquidity_cross_factor/results_multi_universe/RESEARCH_SUMMARY.md \
+            research/liquidity_cross_factor/results_multi_universe/aggregate.csv \
+            research/liquidity_cross_factor/results_multi_universe/frozen_direction_oos.csv \
+            research/liquidity_cross_factor/results_multi_universe/summary.csv \
+            research/liquidity_cross_factor/results_multi_universe/train_oos_decay.csv \
+            research/liquidity_cross_factor/results_multi_universe/vs_base.csv
           if git diff --cached --quiet; then
             echo "No result changes."
             exit 0
