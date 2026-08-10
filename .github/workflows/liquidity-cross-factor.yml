@@ -7,6 +7,7 @@ on:
     paths:
       - research/liquidity_cross_factor/run_cross_factor_liquidity.py
       - research/liquidity_cross_factor/run_cross_factor_liquidity_fixed.py
+      - research/liquidity_cross_factor/run_sign_robustness.py
       - .github/workflows/liquidity-cross-factor.yml
   workflow_dispatch:
 
@@ -33,6 +34,9 @@ jobs:
 
       - name: Run cross-factor liquidity research
         run: python research/liquidity_cross_factor/run_cross_factor_liquidity_fixed.py
+
+      - name: Run factor-direction robustness
+        run: python research/liquidity_cross_factor/run_sign_robustness.py
 
       - name: Commit research outputs
         shell: bash
