@@ -6,6 +6,7 @@ on:
       - research/factor-lab-v2
     paths:
       - research/liquidity_cross_factor/run_cross_factor_liquidity.py
+      - research/liquidity_cross_factor/run_cross_factor_liquidity_fixed.py
       - .github/workflows/liquidity-cross-factor.yml
   workflow_dispatch:
 
@@ -31,7 +32,7 @@ jobs:
         run: python -m pip install --upgrade pip numpy pandas
 
       - name: Run cross-factor liquidity research
-        run: python research/liquidity_cross_factor/run_cross_factor_liquidity.py
+        run: python research/liquidity_cross_factor/run_cross_factor_liquidity_fixed.py
 
       - name: Commit research outputs
         shell: bash
