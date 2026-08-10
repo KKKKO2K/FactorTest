@@ -7,6 +7,7 @@ on:
     paths:
       - research/momentum_12_1_short_filter/run_research.py
       - research/momentum_12_1_short_filter/analyze_results.py
+      - research/momentum_12_1_short_filter/run_threshold_sweep.py
       - .github/workflows/factor-lab-v2-research.yml
   workflow_dispatch:
 
@@ -36,6 +37,9 @@ jobs:
 
       - name: Run paired and OOS analysis
         run: python research/momentum_12_1_short_filter/analyze_results.py
+
+      - name: Run absolute 1M threshold sweep
+        run: python research/momentum_12_1_short_filter/run_threshold_sweep.py
 
       - name: Commit research outputs
         shell: bash
