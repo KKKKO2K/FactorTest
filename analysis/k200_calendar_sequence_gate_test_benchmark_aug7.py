@@ -70,22 +70,32 @@ def _num(x):
     return float(str(x).replace(",", ""))
 
 
+def _fetch_naver_recent():
+    frames = []
+    headers = {"User-Agent": "Mozilla/5.0"}
+    for page in (1, 2):
+        url = f"https://m.stock.naver.com/api/index/KPI200/price?pageSize=60&page={page}"
+        r = requests.get(url, headers=headers, timeout=30)
+        r.raise_for_status()
+        f = pd.DataFrame(r.json())
+        if f.empty:
+            continue
+        f["date"] = pd.to_datetime(f["localTradedAt"])
+        f["naver_close"] = f["closePrice"].map(_num)
+        frames.append(f[["date", "naver_close"]])
+    if not frames:
+        raise RuntimeError("Naver KOSPI200 response was empty")
+    f = pd.concat(frames, ignore_index=True).drop_duplicates("date", keep="first")
+    naver = f.set_index("date")["naver_close"].dropna().sort_index()
+    naver.index = pd.to_datetime(naver.index).tz_localize(None)
+    return naver
+
+
 def download_kospi200_patched():
     yahoo = original_download().copy()
     yahoo.index = pd.to_datetime(yahoo.index).tz_localize(None)
     yahoo = pd.to_numeric(yahoo, errors="coerce").dropna().sort_index()
-
-    url = "https://m.stock.naver.com/api/index/KPI200/price?pageSize=120&page=1"
-    r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
-    r.raise_for_status()
-    data = r.json()
-    f = pd.DataFrame(data)
-    if f.empty:
-        raise RuntimeError("Naver KOSPI200 response was empty")
-    f["date"] = pd.to_datetime(f["localTradedAt"])
-    f["naver_close"] = f["closePrice"].map(_num)
-    naver = f.set_index("date")["naver_close"].dropna().sort_index()
-    naver.index = pd.to_datetime(naver.index).tz_localize(None)
+    naver = _fetch_naver_recent()
 
     # Keep Yahoo as the long-history backbone, but explicitly override recent
     # overlapping dates with Naver and fill Yahoo gaps through 2026-08-07.
