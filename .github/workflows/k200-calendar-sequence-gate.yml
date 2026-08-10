@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip pandas numpy tabulate yfinance requests
       - name: Run test
-        run: python analysis/k200_calendar_sequence_gate_test.py
+        run: python analysis/k200_calendar_sequence_gate_test_fixed.py
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
