@@ -6,6 +6,10 @@ import requests
 base_path = Path(__file__).resolve().parent / "k200_calendar_sequence_gate_test.py"
 source = base_path.read_text(encoding="utf-8")
 source = source.replace('summary[summary.sample == "test"]', 'summary[summary["sample"] == "test"]')
+source = source.replace(
+    'k200_period = enh.forward_index_returns(k200_close, signal_dates, STEP)',
+    'k200_period = forward_index_returns_aligned(k200_close, signal_dates, STEP, returns.index)'
+)
 ns = {"__name__": "k200_calendar_sequence_gate_benchmark_aug7", "__file__": str(base_path)}
 exec(compile(source, str(base_path), "exec"), ns)
 
@@ -97,8 +101,6 @@ def download_kospi200_patched():
     yahoo = pd.to_numeric(yahoo, errors="coerce").dropna().sort_index()
     naver = _fetch_naver_recent()
 
-    # Keep Yahoo as the long-history backbone, but explicitly override recent
-    # overlapping dates with Naver and fill Yahoo gaps through 2026-08-07.
     patched = pd.concat([yahoo.rename("yahoo_close"), naver.rename("naver_close")], axis=1)
     patched["patched_close"] = patched["naver_close"].combine_first(patched["yahoo_close"])
     patched["source"] = np.where(patched["naver_close"].notna(), "NAVER", "YAHOO")
@@ -122,12 +124,36 @@ def download_kospi200_patched():
         recent_overlap = overlap.loc[overlap.index >= pd.Timestamp("2026-04-01")]
         if not recent_overlap.empty:
             print(f"Recent overlap max abs pct diff: {recent_overlap['pct_diff'].abs().max():.8f}")
-    for dt in [pd.Timestamp("2026-07-22"), pd.Timestamp("2026-08-06"), pd.Timestamp("2026-08-07")]:
+    for dt in [pd.Timestamp("2026-07-07"), pd.Timestamp("2026-07-22"), pd.Timestamp("2026-08-06"), pd.Timestamp("2026-08-07")]:
         print(dt.date(), close.get(dt, np.nan), patched.loc[dt, "source"] if dt in patched.index else "MISSING")
     return close
 
 
+def forward_index_returns_aligned(close, signal_dates, horizon, stock_calendar):
+    stock_idx = pd.DatetimeIndex(stock_calendar).sort_values()
+    close = close.sort_index()
+    rows = []
+    for dt in signal_dates:
+        dt = pd.Timestamp(dt)
+        pos = stock_idx.searchsorted(dt, side="left")
+        if pos >= len(stock_idx) or stock_idx[pos] != dt or pos + horizon >= len(stock_idx):
+            rows.append({"date": dt, "end_date": pd.NaT, "k200_return": np.nan})
+            continue
+        end_dt = pd.Timestamp(stock_idx[pos + horizon])
+        if dt not in close.index or end_dt not in close.index:
+            rows.append({"date": dt, "end_date": end_dt, "k200_return": np.nan})
+            continue
+        r = float(close.loc[end_dt] / close.loc[dt] - 1.0)
+        rows.append({"date": dt, "end_date": end_dt, "k200_return": r})
+    audit = pd.DataFrame(rows)
+    audit.to_csv(OUT / "k200_aligned_period_returns.csv", index=False, encoding="utf-8-sig")
+    print("=== ALIGNED K200 RECENT PERIODS ===")
+    print(audit.tail(8).to_string(index=False))
+    return audit.set_index("date")["k200_return"]
+
+
 original_download = enh.download_kospi200
 ns["build_true_calendar_panel"] = build_true_calendar_panel
+ns["forward_index_returns_aligned"] = forward_index_returns_aligned
 enh.download_kospi200 = download_kospi200_patched
 ns["main"]()
