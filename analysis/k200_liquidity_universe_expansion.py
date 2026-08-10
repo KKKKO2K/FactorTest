@@ -30,6 +30,18 @@ _ELIGIBILITY_ROWS: list[dict] = []
 _SEEN_EFFECTIVE: set[pd.Timestamp] = set()
 
 
+def _read_trading_amount_csv(path: Path) -> pd.DataFrame:
+    last_error = None
+    for enc in ("utf-8-sig", "cp949", "euc-kr"):
+        try:
+            return pd.read_csv(path, dtype={"Code": str}, encoding=enc)
+        except UnicodeDecodeError as exc:
+            last_error = exc
+    if last_error is not None:
+        raise last_error
+    return pd.read_csv(path, dtype={"Code": str})
+
+
 def load_ta_day(dt: pd.Timestamp) -> pd.Series:
     dt = pd.Timestamp(dt)
     if dt in _TA_FILE_CACHE:
@@ -38,9 +50,9 @@ def load_ta_day(dt: pd.Timestamp) -> pd.Series:
     if not path.exists():
         s = pd.Series(dtype=float)
     else:
-        f = pd.read_csv(path, dtype={"Code": str})
+        f = _read_trading_amount_csv(path)
         if "Code" not in f.columns or "거래대금(십억원)" not in f.columns:
-            raise KeyError(f"Unexpected trading amount schema: {path}")
+            raise KeyError(f"Unexpected trading amount schema: {path}; columns={list(f.columns)}")
         s = pd.to_numeric(f["거래대금(십억원)"], errors="coerce")
         s.index = f["Code"].astype(str)
         s = s[~s.index.duplicated(keep="last")]
