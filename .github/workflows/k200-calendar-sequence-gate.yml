@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - analysis/k200-calendar-sequence-gate-result
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
