@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: factor-regime-horizon-robustness-research-factor-lab-v2
+  cancel-in-progress: true
+
 jobs:
   run:
     runs-on: ubuntu-latest
