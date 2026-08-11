@@ -25,9 +25,17 @@ UNIVERSES = mu.UNIVERSES
 FWD_HORIZONS = (1, 5, 20)
 FACTOR_WINDOWS = {"FACTOR_5D": 1, "FACTOR_10D": 2, "FACTOR_20D": 4, "FACTOR_40D": 8}
 LIQ_WINDOWS = {
+    # Recent-window sensitivity with baseline held at 20D.
     "LIQ_1D_VS_20D": (1, 20),
+    "LIQ_3D_VS_20D": (3, 20),
     "LIQ_5D_VS_20D": (5, 20),
     "LIQ_10D_VS_20D": (10, 20),
+    "LIQ_20D_VS_20D": (20, 20),
+    # Baseline sensitivity with recent window held at 5D.
+    "LIQ_5D_VS_10D": (5, 10),
+    "LIQ_5D_VS_40D": (5, 40),
+    "LIQ_5D_VS_60D": (5, 60),
+    # Slow/slow anchor.
     "LIQ_20D_VS_60D": (20, 60),
 }
 
@@ -90,10 +98,10 @@ def build_factor_states() -> pd.DataFrame:
 def activity_ratio(raw: pd.DataFrame, recent: int, baseline: int) -> pd.DataFrame:
     if recent == 1:
         recent_avg = raw
-        prior = raw.shift(1).rolling(baseline, min_periods=max(10, int(baseline * 0.75))).mean()
+        prior = raw.shift(1).rolling(baseline, min_periods=max(8, int(baseline * 0.75))).mean()
     else:
         recent_avg = raw.rolling(recent, min_periods=max(1, int(math.ceil(recent * 0.8)))).mean()
-        prior = raw.shift(recent).rolling(baseline, min_periods=max(10, int(baseline * 0.75))).mean()
+        prior = raw.shift(recent).rolling(baseline, min_periods=max(8, int(baseline * 0.75))).mean()
     return recent_avg / prior
 
 
@@ -214,7 +222,7 @@ def summarize(agg: pd.DataFrame, cell: pd.DataFrame) -> str:
         "# Factor Regime Horizon Robustness", "",
         "Purpose: compare nearby lookback definitions before building the 2x2 factor-breadth x liquidity-breadth regime map.",
         "Factor breadth uses canonical factor long-short returns compounded over 5/10/20/40 trading days.",
-        "Liquidity breadth is the share of universe stocks whose recent average trading amount exceeds a strictly preceding baseline: 1/20, 5/20, 10/20, 20/60.",
+        "Liquidity breadth is the share of universe stocks whose recent average trading amount exceeds a strictly preceding baseline. Recent-window sensitivity holds the baseline at 20D (1/3/5/10/20 vs 20); baseline sensitivity holds the recent window at 5D (5 vs 10/20/40/60), with 20/60 as a slow anchor.",
         "State low/high thresholds are fit on 2016-2022 TRAIN only and frozen for 2023+ OOS. Market target is the same universe. Forward horizons are 1/5/20D.",
         "Selection principle: prefer TRAIN->OOS sign stability and a broad neighboring-horizon plateau, not the single largest OOS return spread.", "",
     ]
