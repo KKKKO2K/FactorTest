@@ -1,0 +1,41 @@
+name: Factor Regime Horizon Robustness
+
+on:
+  push:
+    branches:
+      - research/factor-lab-v2
+    paths:
+      - research/factor_regime_horizon_robustness/run_horizon_robustness.py
+      - .github/workflows/factor-regime-horizon-robustness.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/factor-lab-v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade numpy pandas
+      - name: Run horizon robustness
+        run: python research/factor_regime_horizon_robustness/run_horizon_robustness.py
+      - name: Commit outputs
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/factor_regime_horizon_robustness/results/
+          if git diff --cached --quiet; then
+            echo "No result changes."
+            exit 0
+          fi
+          git commit -m "Add factor regime horizon robustness results [skip ci]"
+          git pull --rebase origin research/factor-lab-v2
+          git push origin HEAD:research/factor-lab-v2
