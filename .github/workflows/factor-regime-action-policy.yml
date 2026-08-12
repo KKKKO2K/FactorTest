@@ -6,6 +6,7 @@ on:
       - research/factor-lab-v2
     paths:
       - research/factor_regime_action_policy/run_action_policy.py
+      - research/factor_regime_action_policy/run_action_policy_v2.py
       - .github/workflows/factor-regime-action-policy.yml
   workflow_dispatch:
 
@@ -34,8 +35,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --upgrade numpy pandas
-      - name: Run regime-conditioned action research
-        run: python research/factor_regime_action_policy/run_action_policy.py
+      - name: Run corrected regime-conditioned action research
+        run: python research/factor_regime_action_policy/run_action_policy_v2.py
       - name: Commit outputs
         shell: bash
         run: |
@@ -46,6 +47,6 @@ jobs:
             echo "No result changes."
             exit 0
           fi
-          git commit -m "Add regime-conditioned action results [skip ci]"
+          git commit -m "Add corrected regime action results [skip ci]"
           git pull --rebase origin research/factor-lab-v2
           git push origin HEAD:research/factor-lab-v2
