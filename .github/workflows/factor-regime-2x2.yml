@@ -24,6 +24,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: research/factor-lab-v2
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            research/factor_regime_2x2/
+            research/factor_regime_horizon_robustness/results/
+            research/factor_regime_v1/results/market_daily_returns.csv
+            .github/workflows/factor-regime-2x2.yml
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
