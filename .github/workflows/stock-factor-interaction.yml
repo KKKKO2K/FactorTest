@@ -29,7 +29,15 @@ jobs:
             research/stock_level_factor_interaction
             research/liquidity_cross_factor/run_cross_factor_liquidity.py
             research/liquidity_cross_factor/run_multi_universe_liquidity.py
-            source/factor_all_values
+            source/factor_all_values/reference_snapshots/basic_info
+            source/factor_all_values/OP(12MF_1M_CHG)
+            source/factor_all_values/OP(FY1_1M_CHG)
+            source/factor_all_values/PBR(12MF)
+            source/factor_all_values/PER(12MF)
+            source/factor_all_values/단기모멘텀
+            source/factor_all_values/모멘텀(12-1)
+            source/factor_all_values/사모수급
+            source/factor_all_values/외국인수급
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
