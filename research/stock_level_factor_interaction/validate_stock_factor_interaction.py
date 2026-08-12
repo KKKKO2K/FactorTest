@@ -15,14 +15,12 @@ CORE_SAMPLES=['EARLY_2016_2019','LATE_2020_2022','NORMAL_2023_2024']
 def moving_block_means(x:np.ndarray,block:int=BLOCK,nboot:int=NBOOT)->np.ndarray:
     x=np.asarray(x,float);x=x[np.isfinite(x)];n=len(x)
     if n<8:return np.array([])
-    starts=np.arange(n);out=np.empty(nboot)
     nblocks=int(np.ceil(n/block))
-    for b in range(nboot):
-        chosen=[]
-        for _ in range(nblocks):
-            s=int(RNG.integers(0,n)); chosen.extend(x[(s+np.arange(block))%n].tolist())
-        out[b]=np.mean(chosen[:n])
-    return out
+    starts=RNG.integers(0,n,size=(nboot,nblocks))
+    offsets=np.arange(block)
+    idx=(starts[:,:,None]+offsets[None,None,:])%n
+    samples=x[idx.reshape(nboot,-1)[:,:n]]
+    return samples.mean(axis=1)
 
 
 def main():
@@ -54,7 +52,7 @@ def main():
         if not all(s in mp for s in CORE_SAMPLES):continue
         net=[mp[s].net_delta for s in CORE_SAMPLES];gross=[mp[s].gross_delta for s in CORE_SAMPLES]
         fsub=fa[(fa.universe==u)&(fa.overlay==ov)&(fa['sample'].isin(CORE_SAMPLES))]
-        fampos=fsub.groupby('sample').apply(lambda z:(z.gross_delta>0).sum(),include_groups=False).to_dict() if len(fsub) else {}
+        fampos={sm:int((z.gross_delta>0).sum()) for sm,z in fsub.groupby('sample')} if len(fsub) else {}
         cand.append({'universe':u,'overlay':ov,'net_all3_pos':all(v>0 for v in net),'gross_all3_pos':all(v>0 for v in gross),
                      'early_net':net[0],'late_net':net[1],'normal_net':net[2],'early_gross':gross[0],'late_gross':gross[1],'normal_gross':gross[2],
                      'early_pos_families':fampos.get(CORE_SAMPLES[0],0),'late_pos_families':fampos.get(CORE_SAMPLES[1],0),'normal_pos_families':fampos.get(CORE_SAMPLES[2],0),
