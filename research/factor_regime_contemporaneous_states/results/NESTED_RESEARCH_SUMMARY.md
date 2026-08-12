@@ -29,6 +29,19 @@ Procedure: KMeans BASE K=4 fit on 2016-2022 and frozen. Within each BASE state, 
 
 ## Factor sub-state contrasts that survive TRAIN -> 2023-2024
 
+- KOSPI_EX_K200 B2 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +7.43%, 23-24 +24.18%; min n 38/13; base distance 0.61z/0.70z, factor distance 2.64z/2.45z
+- KOSPI_ALL B2 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +10.35%, 23-24 +18.75%; min n 25/8; base distance 1.27z/1.03z, factor distance 2.99z/3.12z
+- KOSDAQ_PLUS_KOSPI_EX_K200 B4 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN -0.35%, 23-24 -16.67%; min n 59/9; base distance 0.76z/1.42z, factor distance 2.38z/3.79z
+- KOSDAQ_PLUS_KOSPI_EX_K200 B3 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +16.15%, 23-24 +15.32%; min n 67/24; base distance 1.02z/1.14z, factor distance 2.43z/2.92z
+- KOSPI_EX_K200 B2 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN -8.75%, 23-24 -14.29%; min n 38/13; base distance 0.61z/0.70z, factor distance 2.64z/2.45z
+- KOSDAQ_PLUS_KOSPI_EX_K200 B3 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN -4.99%, 23-24 -12.90%; min n 67/24; base distance 1.02z/1.14z, factor distance 2.43z/2.92z
+- KOSPI_ALL B3 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN -7.62%, 23-24 -12.90%; min n 45/21; base distance 1.19z/1.00z, factor distance 2.85z/3.10z
+- KOSDAQ B3 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN -5.63%, 23-24 -9.68%; min n 68/20; base distance 0.97z/1.10z, factor distance 2.59z/2.60z
+- K200 B3 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN -12.72%, 23-24 -7.54%; min n 51/16; base distance 0.90z/0.88z, factor distance 2.70z/2.49z
+- KOSDAQ B3 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +10.71%, 23-24 +7.10%; min n 68/20; base distance 0.97z/1.10z, factor distance 2.59z/2.60z
+- KOSPI_KOSDAQ_ALL B2 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +9.73%, 23-24 +6.25%; min n 29/8; base distance 1.51z/0.80z, factor distance 2.68z/2.77z
+- KOSPI_KOSDAQ_ALL B3 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN -10.32%, 23-24 -4.49%; min n 57/24; base distance 0.91z/1.54z, factor distance 2.47z/2.87z
+- K200 B4 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN -6.90%, 23-24 -3.33%; min n 26/10; base distance 0.88z/0.36z, factor distance 2.72z/2.60z
 - KOSDAQ B3 MKT_FWD_DD20: F_HIGH-F_LOW TRAIN +0.53%, 23-24 +2.38%; min n 68/20; base distance 0.97z/1.10z, factor distance 2.59z/2.60z
 - KOSDAQ B4 MKT_FWD_DD20: F_HIGH-F_LOW TRAIN -2.37%, 23-24 -1.74%; min n 48/10; base distance 0.31z/1.43z, factor distance 2.22z/3.74z
 - KOSPI_KOSDAQ_ALL B2 MKT_FWD_DD20: F_HIGH-F_LOW TRAIN +0.95%, 23-24 +1.56%; min n 29/8; base distance 1.51z/0.80z, factor distance 2.68z/2.77z
@@ -38,44 +51,28 @@ Procedure: KMeans BASE K=4 fit on 2016-2022 and frozen. Within each BASE state, 
 - KOSPI_ALL B2 MKT_FWD_20D: F_HIGH-F_LOW TRAIN -0.54%, 23-24 -1.03%; min n 25/8; base distance 1.27z/1.03z, factor distance 2.99z/3.12z
 - KOSDAQ_PLUS_KOSPI_EX_K200 B4 MKT_FWD_20D: F_HIGH-F_LOW TRAIN -0.91%, 23-24 -0.97%; min n 59/9; base distance 0.76z/1.42z, factor distance 2.38z/3.79z
 - KOSPI_EX_K200 B3 MKT_FWD_DD20: F_HIGH-F_LOW TRAIN -0.63%, 23-24 -0.22%; min n 29/13; base distance 0.77z/0.81z, factor distance 2.76z/3.21z
-- K200 B4 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 26/10; base distance 0.88z/0.36z, factor distance 2.72z/2.60z
 - K200 B4 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 26/10; base distance 0.88z/0.36z, factor distance 2.72z/2.60z
-- K200 B3 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 51/16; base distance 0.90z/0.88z, factor distance 2.70z/2.49z
-- K200 B3 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 51/16; base distance 0.90z/0.88z, factor distance 2.70z/2.49z
-- KOSDAQ_PLUS_KOSPI_EX_K200 B3 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 67/24; base distance 1.02z/1.14z, factor distance 2.43z/2.92z
-- KOSDAQ_PLUS_KOSPI_EX_K200 B3 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 67/24; base distance 1.02z/1.14z, factor distance 2.43z/2.92z
-- KOSDAQ B4 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 48/10; base distance 0.31z/1.43z, factor distance 2.22z/3.74z
-- KOSDAQ_PLUS_KOSPI_EX_K200 B4 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 59/9; base distance 0.76z/1.42z, factor distance 2.38z/3.79z
-- KOSDAQ_PLUS_KOSPI_EX_K200 B4 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 59/9; base distance 0.76z/1.42z, factor distance 2.38z/3.79z
 - KOSDAQ B4 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 48/10; base distance 0.31z/1.43z, factor distance 2.22z/3.74z
-- KOSDAQ B3 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 68/20; base distance 0.97z/1.10z, factor distance 2.59z/2.60z
-- KOSDAQ B3 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 68/20; base distance 0.97z/1.10z, factor distance 2.59z/2.60z
-- KOSPI_ALL B3 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 45/21; base distance 1.19z/1.00z, factor distance 2.85z/3.10z
-- KOSPI_ALL B2 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 25/8; base distance 1.27z/1.03z, factor distance 2.99z/3.12z
-- KOSPI_ALL B2 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 25/8; base distance 1.27z/1.03z, factor distance 2.99z/3.12z
+- KOSDAQ_PLUS_KOSPI_EX_K200 B4 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 59/9; base distance 0.76z/1.42z, factor distance 2.38z/3.79z
 - KOSPI_ALL B4 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 44/10; base distance 0.52z/0.63z, factor distance 2.65z/3.11z
-- KOSPI_ALL B4 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 44/10; base distance 0.52z/0.63z, factor distance 2.65z/3.11z
-- KOSPI_EX_K200 B2 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 38/13; base distance 0.61z/0.70z, factor distance 2.64z/2.45z
-- KOSPI_EX_K200 B2 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 38/13; base distance 0.61z/0.70z, factor distance 2.64z/2.45z
-- KOSPI_ALL B3 NEXT_BASE_DOWN: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 45/21; base distance 1.19z/1.00z, factor distance 2.85z/3.10z
-- KOSPI_EX_K200 B3 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 29/13; base distance 0.77z/0.81z, factor distance 2.76z/3.21z
+- KOSPI_EX_K200 B4 NEXT_BASE_UP: F_HIGH-F_LOW TRAIN +0.00%, 23-24 +0.00%; min n 29/8; base distance 1.43z/1.01z, factor distance 2.89z/3.09z
 
 ## All 2023-2024 nested contrasts with adequate n
 
 - K200 B4: n H/L=10/15, base distance 0.36z, factor distance 2.60z; next20 diff +2.28%, downside diff +0.32%, next-base-up diff +0.0%
-- KOSDAQ_PLUS_KOSPI_EX_K200 B3: n H/L=24/31, base distance 1.14z, factor distance 2.92z; next20 diff +1.86%, downside diff +2.22%, next-base-up diff +0.0%
-- KOSDAQ B3: n H/L=20/31, base distance 1.10z, factor distance 2.60z; next20 diff +1.84%, downside diff +2.38%, next-base-up diff +0.0%
+- KOSDAQ_PLUS_KOSPI_EX_K200 B3: n H/L=24/31, base distance 1.14z, factor distance 2.92z; next20 diff +1.86%, downside diff +2.22%, next-base-up diff +15.3%
+- KOSDAQ B3: n H/L=20/31, base distance 1.10z, factor distance 2.60z; next20 diff +1.84%, downside diff +2.38%, next-base-up diff +7.1%
 - KOSPI_ALL B4: n H/L=11/10, base distance 0.63z, factor distance 3.11z; next20 diff +1.81%, downside diff +1.12%, next-base-up diff +0.0%
 - KOSDAQ B4: n H/L=10/12, base distance 1.43z, factor distance 3.74z; next20 diff -1.52%, downside diff -1.74%, next-base-up diff +0.0%
-- K200 B3: n H/L=16/29, base distance 0.88z, factor distance 2.49z; next20 diff -1.40%, downside diff -1.61%, next-base-up diff +0.0%
-- KOSPI_ALL B3: n H/L=21/31, base distance 1.00z, factor distance 3.10z; next20 diff -1.27%, downside diff -0.97%, next-base-up diff +0.0%
-- KOSPI_ALL B2: n H/L=8/16, base distance 1.03z, factor distance 3.12z; next20 diff -1.03%, downside diff -0.96%, next-base-up diff +0.0%
+- K200 B3: n H/L=16/29, base distance 0.88z, factor distance 2.49z; next20 diff -1.40%, downside diff -1.61%, next-base-up diff +16.8%
+- KOSPI_ALL B3: n H/L=21/31, base distance 1.00z, factor distance 3.10z; next20 diff -1.27%, downside diff -0.97%, next-base-up diff -5.1%
+- KOSPI_ALL B2: n H/L=8/16, base distance 1.03z, factor distance 3.12z; next20 diff -1.03%, downside diff -0.96%, next-base-up diff +18.8%
 - KOSDAQ_PLUS_KOSPI_EX_K200 B4: n H/L=9/12, base distance 1.42z, factor distance 3.79z; next20 diff -0.97%, downside diff -1.35%, next-base-up diff +0.0%
-- KOSPI_KOSDAQ_ALL B3: n H/L=26/24, base distance 1.54z, factor distance 2.87z; next20 diff -0.91%, downside diff -0.48%, next-base-up diff +0.0%
+- KOSPI_KOSDAQ_ALL B3: n H/L=26/24, base distance 1.54z, factor distance 2.87z; next20 diff -0.91%, downside diff -0.48%, next-base-up diff +6.7%
 - KOSPI_EX_K200 B4: n H/L=8/18, base distance 1.01z, factor distance 3.09z; next20 diff +0.71%, downside diff +1.35%, next-base-up diff +0.0%
-- KOSPI_KOSDAQ_ALL B2: n H/L=8/16, base distance 0.80z, factor distance 2.77z; next20 diff -0.45%, downside diff +1.56%, next-base-up diff +0.0%
-- KOSPI_EX_K200 B2: n H/L=13/21, base distance 0.70z, factor distance 2.45z; next20 diff -0.35%, downside diff +1.26%, next-base-up diff +0.0%
-- KOSPI_EX_K200 B3: n H/L=13/18, base distance 0.81z, factor distance 3.21z; next20 diff +0.19%, downside diff -0.22%, next-base-up diff +0.0%
+- KOSPI_KOSDAQ_ALL B2: n H/L=8/16, base distance 0.80z, factor distance 2.77z; next20 diff -0.45%, downside diff +1.56%, next-base-up diff +6.2%
+- KOSPI_EX_K200 B2: n H/L=13/21, base distance 0.70z, factor distance 2.45z; next20 diff -0.35%, downside diff +1.26%, next-base-up diff +24.2%
+- KOSPI_EX_K200 B3: n H/L=13/18, base distance 0.81z, factor distance 3.21z; next20 diff +0.19%, downside diff -0.22%, next-base-up diff -4.7%
 
 ## Interpretation rules
 
