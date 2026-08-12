@@ -1,0 +1,50 @@
+name: Factor Regime Full State Map
+
+on:
+  push:
+    branches:
+      - research/factor-lab-v2
+    paths:
+      - research/factor_regime_full_state_map/run_full_state_map.py
+      - .github/workflows/factor-regime-full-state-map.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: factor-regime-full-state-map
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/factor-lab-v2
+          fetch-depth: 1
+          sparse-checkout: |
+            research/factor_regime_full_state_map
+            research/factor_regime_v1/results/factor_5d_returns.csv
+            research/factor_regime_v1/results/market_daily_returns.csv
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade numpy pandas
+      - name: Run full family state-map research
+        run: python research/factor_regime_full_state_map/run_full_state_map.py
+      - name: Commit outputs
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/factor_regime_full_state_map/results/
+          if git diff --cached --quiet; then
+            echo "No result changes."
+            exit 0
+          fi
+          git commit -m "Add full factor-state map results [skip ci]"
+          git pull --rebase origin research/factor-lab-v2
+          git push origin HEAD:research/factor-lab-v2
