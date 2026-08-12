@@ -27,6 +27,7 @@ jobs:
           fetch-depth: 1
           sparse-checkout: |
             research/stock_level_factor_interaction/confirm_cross_family_w20.py
+            research/stock_level_factor_interaction/results_confirmatory
             research/liquidity_cross_factor/run_cross_factor_liquidity.py
             research/liquidity_cross_factor/run_multi_universe_liquidity.py
             source/factor_all_values/reference_snapshots/basic_info
@@ -49,7 +50,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add research/stock_level_factor_interaction/results_confirmatory/
+          git add --sparse research/stock_level_factor_interaction/results_confirmatory/
           if git diff --cached --quiet; then
             echo "No result changes."
             exit 0
