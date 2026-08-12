@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: stock-factor-interaction
+  group: stock-factor-interaction-scoped
   cancel-in-progress: true
 
 jobs:
