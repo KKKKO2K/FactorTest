@@ -10,6 +10,7 @@ on:
       - research/factor_regime_contemporaneous_states/run_nested_factor_regimes.py
       - research/factor_regime_contemporaneous_states/run_nested_factor_regimes_v2.py
       - research/factor_regime_contemporaneous_states/run_nested_robustness.py
+      - research/factor_regime_contemporaneous_states/run_nested_robustness_v2.py
       - .github/workflows/factor-regime-contemporaneous-states.yml
   workflow_dispatch:
 
@@ -44,8 +45,8 @@ jobs:
         run: python research/factor_regime_contemporaneous_states/run_contemporaneous_regimes_v2.py
       - name: Run corrected nested factor sub-regime test
         run: python research/factor_regime_contemporaneous_states/run_nested_factor_regimes_v2.py
-      - name: Run nested robustness grid
-        run: python research/factor_regime_contemporaneous_states/run_nested_robustness.py
+      - name: Run fixed nested robustness grid
+        run: python research/factor_regime_contemporaneous_states/run_nested_robustness_v2.py
       - name: Commit outputs
         shell: bash
         run: |
