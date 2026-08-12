@@ -1,0 +1,51 @@
+name: Factor Regime Historical Subperiod Validation
+
+on:
+  push:
+    branches:
+      - research/factor-lab-v2
+    paths:
+      - research/factor_regime_historical_subperiod_validation/run_historical_subperiod_validation.py
+      - .github/workflows/factor-regime-historical-subperiod-validation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: factor-regime-historical-subperiod-validation
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/factor-lab-v2
+          fetch-depth: 1
+          sparse-checkout: |
+            research/factor_regime_historical_subperiod_validation
+            research/factor_regime_full_state_map/results/family_states_static.csv
+            research/factor_regime_absolute_states/results/refined_breadth_panel.csv
+            research/factor_regime_v1/results/market_daily_returns.csv
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade numpy pandas
+      - name: Run historical subperiod validation
+        run: python research/factor_regime_historical_subperiod_validation/run_historical_subperiod_validation.py
+      - name: Commit outputs
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/factor_regime_historical_subperiod_validation/results/
+          if git diff --cached --quiet; then
+            echo "No result changes."
+            exit 0
+          fi
+          git commit -m "Add historical subperiod validation results [skip ci]"
+          git pull --rebase origin research/factor-lab-v2
+          git push origin HEAD:research/factor-lab-v2
