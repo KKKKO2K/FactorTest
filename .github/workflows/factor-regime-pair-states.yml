@@ -25,6 +25,10 @@ jobs:
         with:
           ref: research/factor-lab-v2
           fetch-depth: 1
+          sparse-checkout: |
+            research/factor_regime_v1/results
+            research/factor_regime_pair_states
+            .github/workflows/factor-regime-pair-states.yml
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
