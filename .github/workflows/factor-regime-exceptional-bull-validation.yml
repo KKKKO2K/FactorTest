@@ -6,6 +6,7 @@ on:
       - research/factor-lab-v2
     paths:
       - research/factor_regime_exceptional_bull_validation/run_exceptional_bull_validation.py
+      - research/factor_regime_exceptional_bull_validation/run_controlled_regressions.py
       - .github/workflows/factor-regime-exceptional-bull-validation.yml
   workflow_dispatch:
 
@@ -35,9 +36,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install --upgrade numpy pandas
+      - run: python -m pip install --upgrade numpy pandas statsmodels
       - name: Run exceptional bull validation
         run: python research/factor_regime_exceptional_bull_validation/run_exceptional_bull_validation.py
+      - name: Run continuous-control regressions
+        run: python research/factor_regime_exceptional_bull_validation/run_controlled_regressions.py
       - name: Commit outputs
         shell: bash
         run: |
