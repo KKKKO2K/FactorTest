@@ -1,0 +1,51 @@
+name: Factor Regime Action Policy
+
+on:
+  push:
+    branches:
+      - research/factor-lab-v2
+    paths:
+      - research/factor_regime_action_policy/run_action_policy.py
+      - .github/workflows/factor-regime-action-policy.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: factor-regime-action-policy
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/factor-lab-v2
+          fetch-depth: 1
+          sparse-checkout: |
+            research/factor_regime_action_policy
+            research/factor_regime_contemporaneous_states/results/nested_state_assignments.csv
+            research/factor_regime_full_state_map/results/family_primitives.csv
+            research/factor_regime_full_state_map/results/family_states_static.csv
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade numpy pandas
+      - name: Run regime-conditioned action research
+        run: python research/factor_regime_action_policy/run_action_policy.py
+      - name: Commit outputs
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/factor_regime_action_policy/results/
+          if git diff --cached --quiet; then
+            echo "No result changes."
+            exit 0
+          fi
+          git commit -m "Add regime-conditioned action results [skip ci]"
+          git pull --rebase origin research/factor-lab-v2
+          git push origin HEAD:research/factor-lab-v2
