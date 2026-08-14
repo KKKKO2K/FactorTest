@@ -47,7 +47,9 @@ jobs:
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+KKKKO2K@users.noreply.github.com"
+          # Raw Top100 stock-level surface is intentionally not retained; compact zone/contrast outputs are retained.
+          rm -f research/stock_level_factor_interaction/results_cf20_trimmed_activity/surface_top100.csv
           git add --sparse research/stock_level_factor_interaction/results_cf20_trimmed_activity/
           if git diff --cached --quiet; then
             echo "No result changes."
