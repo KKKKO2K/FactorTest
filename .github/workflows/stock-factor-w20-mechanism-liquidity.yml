@@ -6,6 +6,7 @@ on:
       - research/factor-lab-v2
     paths:
       - research/stock_level_factor_interaction/run_w20_mechanism_liquidity.py
+      - research/stock_level_factor_interaction/run_w20_mechanism_liquidity_cached.py
       - .github/workflows/stock-factor-w20-mechanism-liquidity.yml
   workflow_dispatch:
 
@@ -27,6 +28,7 @@ jobs:
           fetch-depth: 1
           sparse-checkout: |
             research/stock_level_factor_interaction/run_w20_mechanism_liquidity.py
+            research/stock_level_factor_interaction/run_w20_mechanism_liquidity_cached.py
             research/stock_level_factor_interaction/results_mechanism_liquidity
             research/liquidity_cross_factor/run_cross_factor_liquidity.py
             research/liquidity_cross_factor/run_multi_universe_liquidity.py
@@ -45,7 +47,7 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install --upgrade numpy pandas
       - name: Run mechanism and incremental liquidity validation
-        run: python research/stock_level_factor_interaction/run_w20_mechanism_liquidity.py
+        run: python research/stock_level_factor_interaction/run_w20_mechanism_liquidity_cached.py
       - name: Commit outputs
         shell: bash
         run: |
