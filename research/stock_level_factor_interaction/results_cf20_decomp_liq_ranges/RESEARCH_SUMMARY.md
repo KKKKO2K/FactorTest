@@ -1,0 +1,172 @@
+# CF20 Decomposition + ACT5 Range/Veto Tests
+
+All rules are predeclared. CF20 remains 80% primary + 20% other-family consensus. Decomposition uses a fixed 20% (4-of-20) surgery. Liquidity cutoffs use point-in-time cross-sectional ACT5 percentiles; no cutoff is selected from outcomes.
+
+## 1) CF20 mechanism decomposition — net 30bp edge vs BASE, H10 Top20
+
+- K200 VETO20: -0.00% -> +0.01% -> +0.06%; FAIL
+- K200 PROMOTE20: -0.02% -> -0.08% -> +0.06%; FAIL
+- K200 VETO_PROMOTE20: +0.01% -> +0.02% -> +0.05%; PASS
+- K200 CF20: +0.02% -> -0.01% -> +0.07%; FAIL
+- KOSPI_EX_K200 VETO20: +0.02% -> -0.09% -> +0.09%; FAIL
+- KOSPI_EX_K200 PROMOTE20: -0.02% -> -0.00% -> -0.10%; FAIL
+- KOSPI_EX_K200 VETO_PROMOTE20: +0.02% -> -0.09% -> +0.07%; FAIL
+- KOSPI_EX_K200 CF20: +0.04% -> -0.00% -> +0.09%; FAIL
+- KOSPI_ALL VETO20: +0.02% -> +0.03% -> +0.03%; PASS
+- KOSPI_ALL PROMOTE20: -0.02% -> +0.07% -> -0.09%; FAIL
+- KOSPI_ALL VETO_PROMOTE20: +0.01% -> +0.05% -> +0.10%; PASS
+- KOSPI_ALL CF20: +0.03% -> +0.06% -> +0.04%; PASS
+- KOSDAQ VETO20: -0.01% -> +0.08% -> +0.02%; FAIL
+- KOSDAQ PROMOTE20: +0.03% -> -0.11% -> -0.07%; FAIL
+- KOSDAQ VETO_PROMOTE20: +0.04% -> +0.04% -> +0.07%; PASS
+- KOSDAQ CF20: +0.04% -> +0.06% -> +0.04%; PASS
+- KOSPI_KOSDAQ_ALL VETO20: +0.05% -> +0.09% -> -0.03%; FAIL
+- KOSPI_KOSDAQ_ALL PROMOTE20: +0.09% -> +0.10% -> +0.03%; PASS
+- KOSPI_KOSDAQ_ALL VETO_PROMOTE20: +0.05% -> +0.08% -> +0.06%; PASS
+- KOSPI_KOSDAQ_ALL CF20: +0.13% -> +0.17% -> +0.06%; PASS
+- KOSDAQ_PLUS_KOSPI_EX_K200 VETO20: +0.08% -> +0.13% -> +0.05%; PASS
+- KOSDAQ_PLUS_KOSPI_EX_K200 PROMOTE20: +0.03% -> +0.07% -> +0.03%; PASS
+- KOSDAQ_PLUS_KOSPI_EX_K200 VETO_PROMOTE20: +0.06% -> +0.12% -> +0.02%; PASS
+- KOSDAQ_PLUS_KOSPI_EX_K200 CF20: +0.08% -> +0.17% -> +0.09%; PASS
+
+## Decomposition relative to full CF20 — net 30bp
+
+- K200 BASE minus CF20: -0.02% -> +0.01% -> -0.07%
+- K200 VETO20 minus CF20: -0.03% -> +0.02% -> -0.01%
+- K200 PROMOTE20 minus CF20: -0.05% -> -0.07% -> -0.01%
+- K200 VETO_PROMOTE20 minus CF20: -0.02% -> +0.03% -> -0.02%
+- KOSPI_EX_K200 BASE minus CF20: -0.04% -> +0.00% -> -0.09%
+- KOSPI_EX_K200 VETO20 minus CF20: -0.02% -> -0.09% -> +0.00%
+- KOSPI_EX_K200 PROMOTE20 minus CF20: -0.06% -> +0.00% -> -0.19%
+- KOSPI_EX_K200 VETO_PROMOTE20 minus CF20: -0.02% -> -0.09% -> -0.02%
+- KOSPI_ALL BASE minus CF20: -0.03% -> -0.06% -> -0.04%
+- KOSPI_ALL VETO20 minus CF20: -0.01% -> -0.03% -> -0.01%
+- KOSPI_ALL PROMOTE20 minus CF20: -0.04% -> +0.01% -> -0.13%
+- KOSPI_ALL VETO_PROMOTE20 minus CF20: -0.01% -> -0.01% -> +0.06%
+- KOSDAQ BASE minus CF20: -0.04% -> -0.06% -> -0.04%
+- KOSDAQ VETO20 minus CF20: -0.05% -> +0.03% -> -0.01%
+- KOSDAQ PROMOTE20 minus CF20: -0.01% -> -0.17% -> -0.11%
+- KOSDAQ VETO_PROMOTE20 minus CF20: -0.00% -> -0.02% -> +0.03%
+- KOSPI_KOSDAQ_ALL BASE minus CF20: -0.13% -> -0.17% -> -0.06%
+- KOSPI_KOSDAQ_ALL VETO20 minus CF20: -0.07% -> -0.08% -> -0.09%
+- KOSPI_KOSDAQ_ALL PROMOTE20 minus CF20: -0.04% -> -0.07% -> -0.02%
+- KOSPI_KOSDAQ_ALL VETO_PROMOTE20 minus CF20: -0.08% -> -0.09% -> -0.00%
+- KOSDAQ_PLUS_KOSPI_EX_K200 BASE minus CF20: -0.08% -> -0.17% -> -0.09%
+- KOSDAQ_PLUS_KOSPI_EX_K200 VETO20 minus CF20: -0.00% -> -0.04% -> -0.04%
+- KOSDAQ_PLUS_KOSPI_EX_K200 PROMOTE20 minus CF20: -0.05% -> -0.10% -> -0.06%
+- KOSDAQ_PLUS_KOSPI_EX_K200 VETO_PROMOTE20 minus CF20: -0.02% -> -0.05% -> -0.07%
+
+## 2) ACT5 range/veto rules on top of CF20
+
+PASS requires positive 30bp-net incremental edge in 2016-19, 2020-22, and 2023-24 for the same rule/universe/horizon.
+
+### VETO_LOW10
+- KOSPI_EX_K200 H5: +0.01% -> +0.02% -> +0.05%
+- KOSPI_EX_K200 H10: +0.05% -> +0.03% -> +0.01%
+- KOSPI_EX_K200 H20: +0.01% -> +0.05% -> +0.07%
+- KOSDAQ H20: +0.10% -> +0.00% -> +0.06%
+- KOSPI_KOSDAQ_ALL H20: +0.15% -> +0.03% -> +0.19%
+- KOSDAQ_PLUS_KOSPI_EX_K200 H20: +0.16% -> +0.01% -> +0.15%
+### VETO_LOW20
+- KOSDAQ H10: +0.06% -> +0.02% -> +0.06%
+- KOSDAQ H20: +0.10% -> +0.06% -> +0.14%
+- KOSPI_KOSDAQ_ALL H20: +0.13% -> +0.25% -> +0.06%
+### VETO_HIGH10
+- KOSPI_EX_K200 H10: +0.03% -> +0.08% -> +0.05%
+- KOSDAQ_PLUS_KOSPI_EX_K200 H10: +0.03% -> +0.01% -> +0.14%
+### VETO_BOTH10
+- KOSPI_EX_K200 H10: +0.04% -> +0.06% -> +0.01%
+
+## All H10 Top20 ACT5 rules — 30bp net, for reference
+
+### K200
+- VETO_LOW10: -0.03% -> -0.05% -> +0.06%; FAIL
+- VETO_LOW20: -0.06% -> -0.02% -> +0.03%; FAIL
+- VETO_HIGH10: -0.02% -> -0.00% -> -0.04%; FAIL
+- VETO_HIGH20: -0.01% -> +0.01% -> -0.06%; FAIL
+- VETO_BOTH10: -0.03% -> -0.01% -> +0.03%; FAIL
+- VETO_BOTH20: -0.06% -> -0.06% -> +0.10%; FAIL
+- NEGLECT_LOW50: -0.07% -> +0.04% -> -0.24%; FAIL
+- NEGLECT_LOW30: -0.19% -> -0.17% -> -0.46%; FAIL
+- HOT_HIGH30_DIAG: -0.18% -> -0.50% -> -0.24%; FAIL
+### KOSPI_EX_K200
+- VETO_LOW10: +0.05% -> +0.03% -> +0.01%; PASS
+- VETO_LOW20: -0.02% -> -0.05% -> +0.05%; FAIL
+- VETO_HIGH10: +0.03% -> +0.08% -> +0.05%; PASS
+- VETO_HIGH20: -0.01% -> +0.01% -> +0.05%; FAIL
+- VETO_BOTH10: +0.04% -> +0.06% -> +0.01%; PASS
+- VETO_BOTH20: -0.02% -> -0.11% -> +0.06%; FAIL
+- NEGLECT_LOW50: -0.09% -> +0.06% -> -0.33%; FAIL
+- NEGLECT_LOW30: +0.06% -> +0.02% -> -0.63%; FAIL
+- HOT_HIGH30_DIAG: -0.23% -> -0.56% -> -0.42%; FAIL
+### KOSPI_ALL
+- VETO_LOW10: +0.02% -> -0.09% -> -0.01%; FAIL
+- VETO_LOW20: -0.03% -> -0.15% -> +0.04%; FAIL
+- VETO_HIGH10: -0.06% -> -0.03% -> -0.00%; FAIL
+- VETO_HIGH20: -0.07% -> -0.02% -> -0.07%; FAIL
+- VETO_BOTH10: -0.06% -> -0.11% -> -0.01%; FAIL
+- VETO_BOTH20: -0.12% -> -0.21% -> -0.00%; FAIL
+- NEGLECT_LOW50: -0.10% -> -0.10% -> -0.33%; FAIL
+- NEGLECT_LOW30: -0.26% -> -0.00% -> -0.48%; FAIL
+- HOT_HIGH30_DIAG: -0.29% -> -0.53% -> -0.36%; FAIL
+### KOSDAQ
+- VETO_LOW10: +0.05% -> -0.01% -> +0.04%; FAIL
+- VETO_LOW20: +0.06% -> +0.02% -> +0.06%; PASS
+- VETO_HIGH10: -0.01% -> -0.09% -> +0.05%; FAIL
+- VETO_HIGH20: -0.14% -> -0.11% -> +0.13%; FAIL
+- VETO_BOTH10: -0.00% -> -0.11% -> +0.08%; FAIL
+- VETO_BOTH20: -0.10% -> -0.07% -> +0.24%; FAIL
+- NEGLECT_LOW50: -0.30% -> -0.33% -> -0.06%; FAIL
+- NEGLECT_LOW30: -0.49% -> -0.84% -> -0.29%; FAIL
+- HOT_HIGH30_DIAG: -0.19% -> -0.08% -> -0.05%; FAIL
+### KOSPI_KOSDAQ_ALL
+- VETO_LOW10: +0.07% -> -0.01% -> +0.07%; FAIL
+- VETO_LOW20: +0.06% -> -0.01% -> +0.10%; FAIL
+- VETO_HIGH10: +0.00% -> -0.07% -> +0.14%; FAIL
+- VETO_HIGH20: -0.01% -> -0.11% -> +0.10%; FAIL
+- VETO_BOTH10: +0.03% -> -0.11% -> +0.23%; FAIL
+- VETO_BOTH20: -0.03% -> -0.14% -> +0.11%; FAIL
+- NEGLECT_LOW50: -0.25% -> -0.21% -> -0.21%; FAIL
+- NEGLECT_LOW30: -0.46% -> -0.38% -> -0.33%; FAIL
+- HOT_HIGH30_DIAG: -0.20% -> -0.15% -> -0.12%; FAIL
+### KOSDAQ_PLUS_KOSPI_EX_K200
+- VETO_LOW10: +0.08% -> -0.02% -> +0.08%; FAIL
+- VETO_LOW20: +0.07% -> -0.04% -> -0.00%; FAIL
+- VETO_HIGH10: +0.03% -> +0.01% -> +0.14%; PASS
+- VETO_HIGH20: -0.05% -> -0.06% -> +0.14%; FAIL
+- VETO_BOTH10: +0.06% -> -0.01% -> +0.13%; FAIL
+- VETO_BOTH20: -0.03% -> -0.14% -> +0.16%; FAIL
+- NEGLECT_LOW50: -0.26% -> -0.22% -> -0.08%; FAIL
+- NEGLECT_LOW30: -0.31% -> -0.41% -> -0.29%; FAIL
+- HOT_HIGH30_DIAG: -0.18% -> -0.32% -> -0.03%; FAIL
+
+## 3) ACT5 shape inside frozen CF20 Top40 candidate pool
+
+Contrasts are future 10D returns; LOW20=ACT5 bottom 20%, MID60=20-80%, HIGH20=top 20%.
+
+- K200 EARLY_2016_2019: MID60_MINUS_LOW20 -0.07% (P>0 32%); MID60_MINUS_HIGH20 +0.11% (P>0 76%); LOW20_MINUS_HIGH20 +0.18% (P>0 80%)
+- K200 LATE_2020_2022: MID60_MINUS_LOW20 -0.16% (P>0 29%); MID60_MINUS_HIGH20 -0.02% (P>0 48%); LOW20_MINUS_HIGH20 +0.14% (P>0 63%)
+- K200 NORMAL_2023_2024: MID60_MINUS_LOW20 +0.60% (P>0 97%); MID60_MINUS_HIGH20 +0.12% (P>0 65%); LOW20_MINUS_HIGH20 -0.48% (P>0 17%)
+- KOSPI_EX_K200 EARLY_2016_2019: MID60_MINUS_LOW20 +0.04% (P>0 55%); MID60_MINUS_HIGH20 +0.12% (P>0 71%); LOW20_MINUS_HIGH20 +0.08% (P>0 58%)
+- KOSPI_EX_K200 LATE_2020_2022: MID60_MINUS_LOW20 -0.47% (P>0 10%); MID60_MINUS_HIGH20 -0.26% (P>0 22%); LOW20_MINUS_HIGH20 +0.21% (P>0 67%)
+- KOSPI_EX_K200 NORMAL_2023_2024: MID60_MINUS_LOW20 +0.35% (P>0 73%); MID60_MINUS_HIGH20 +0.44% (P>0 89%); LOW20_MINUS_HIGH20 +0.10% (P>0 55%)
+- KOSPI_ALL EARLY_2016_2019: MID60_MINUS_LOW20 +0.00% (P>0 54%); MID60_MINUS_HIGH20 +0.06% (P>0 61%); LOW20_MINUS_HIGH20 +0.06% (P>0 57%)
+- KOSPI_ALL LATE_2020_2022: MID60_MINUS_LOW20 -0.54% (P>0 6%); MID60_MINUS_HIGH20 -0.16% (P>0 30%); LOW20_MINUS_HIGH20 +0.38% (P>0 79%)
+- KOSPI_ALL NORMAL_2023_2024: MID60_MINUS_LOW20 +0.50% (P>0 84%); MID60_MINUS_HIGH20 +0.05% (P>0 56%); LOW20_MINUS_HIGH20 -0.45% (P>0 24%)
+- KOSDAQ EARLY_2016_2019: MID60_MINUS_LOW20 +0.76% (P>0 98%); MID60_MINUS_HIGH20 -0.18% (P>0 28%); LOW20_MINUS_HIGH20 -0.94% (P>0 2%)
+- KOSDAQ LATE_2020_2022: MID60_MINUS_LOW20 +0.86% (P>0 100%); MID60_MINUS_HIGH20 +0.07% (P>0 60%); LOW20_MINUS_HIGH20 -0.79% (P>0 5%)
+- KOSDAQ NORMAL_2023_2024: MID60_MINUS_LOW20 +1.56% (P>0 100%); MID60_MINUS_HIGH20 +0.44% (P>0 76%); LOW20_MINUS_HIGH20 -1.11% (P>0 9%)
+- KOSPI_KOSDAQ_ALL EARLY_2016_2019: MID60_MINUS_LOW20 +0.26% (P>0 76%); MID60_MINUS_HIGH20 +0.01% (P>0 52%); LOW20_MINUS_HIGH20 -0.25% (P>0 28%)
+- KOSPI_KOSDAQ_ALL LATE_2020_2022: MID60_MINUS_LOW20 -0.35% (P>0 25%); MID60_MINUS_HIGH20 -0.15% (P>0 31%); LOW20_MINUS_HIGH20 +0.20% (P>0 63%)
+- KOSPI_KOSDAQ_ALL NORMAL_2023_2024: MID60_MINUS_LOW20 +0.71% (P>0 90%); MID60_MINUS_HIGH20 +0.26% (P>0 73%); LOW20_MINUS_HIGH20 -0.44% (P>0 24%)
+- KOSDAQ_PLUS_KOSPI_EX_K200 EARLY_2016_2019: MID60_MINUS_LOW20 +0.62% (P>0 96%); MID60_MINUS_HIGH20 +0.17% (P>0 75%); LOW20_MINUS_HIGH20 -0.45% (P>0 15%)
+- KOSDAQ_PLUS_KOSPI_EX_K200 LATE_2020_2022: MID60_MINUS_LOW20 -0.07% (P>0 44%); MID60_MINUS_HIGH20 -0.16% (P>0 30%); LOW20_MINUS_HIGH20 -0.09% (P>0 43%)
+- KOSDAQ_PLUS_KOSPI_EX_K200 NORMAL_2023_2024: MID60_MINUS_LOW20 +0.25% (P>0 72%); MID60_MINUS_HIGH20 +0.51% (P>0 84%); LOW20_MINUS_HIGH20 +0.26% (P>0 68%)
+
+## Guardrails
+
+- VETO20 and PROMOTE20 are mechanism tests, not newly optimized production rules.
+- HOT_HIGH30_DIAG is diagnostic; do not promote it even if it wins.
+- 2025 and 2026 remain stress diagnostics only and are not used for rule selection.
+- Range-veto promotion requires same-sign net edge across all three core historical blocks; isolated horizon/universe wins are hypotheses only.
+
