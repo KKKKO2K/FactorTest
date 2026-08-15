@@ -1,0 +1,55 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "paths.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 1079838,
+  "columns": [
+    "date",
+    "sample",
+    "horizon",
+    "universe",
+    "factor",
+    "family",
+    "metric",
+    "strategy",
+    "gross",
+    "turnover",
+    "mean_metric_rank"
+  ],
+  "parts": [
+    {
+      "file": "paths_parts/paths.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 339037,
+      "rows": 339037,
+      "bytes": 4735319,
+      "sha256": "faac0b394874fd8729dd38614b03bae6e2316bed65df5022ed8266006520bb47"
+    },
+    {
+      "file": "paths_parts/paths.part-0001.csv.gz",
+      "row_start": 339037,
+      "row_stop_exclusive": 678074,
+      "rows": 339037,
+      "bytes": 4842655,
+      "sha256": "cbe3b3464aade31185c45d498f3b295e6607c4fa5b11abef0c26527483e548c6"
+    },
+    {
+      "file": "paths_parts/paths.part-0002.csv.gz",
+      "row_start": 678074,
+      "row_stop_exclusive": 1017111,
+      "rows": 339037,
+      "bytes": 4714506,
+      "sha256": "ae17ade9e399d4424fa6418e6506e432138091aa7d010bf5db50780e26b66abb"
+    },
+    {
+      "file": "paths_parts/paths.part-0003.csv.gz",
+      "row_start": 1017111,
+      "row_stop_exclusive": 1079838,
+      "rows": 62727,
+      "bytes": 869125,
+      "sha256": "c7cf39a812e4fee9a6d1ed85e528c5bca4051328b415a61ae55b96f69c54f904"
+    }
+  ]
+}

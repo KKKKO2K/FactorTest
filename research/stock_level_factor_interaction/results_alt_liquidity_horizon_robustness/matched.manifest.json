@@ -1,0 +1,78 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "matched.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 924318,
+  "columns": [
+    "date",
+    "sample",
+    "horizon",
+    "universe",
+    "factor",
+    "family",
+    "metric",
+    "strategy",
+    "gross",
+    "turnover",
+    "mean_metric_rank",
+    "base_gross",
+    "base_turnover",
+    "gross_delta",
+    "turnover_delta",
+    "net_delta_0",
+    "net_delta_30",
+    "net_delta_60"
+  ],
+  "parts": [
+    {
+      "file": "matched_parts/matched.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 184703,
+      "rows": 184703,
+      "bytes": 5055466,
+      "sha256": "3f70f3e6d454670866682541df4d3e89247d0c531890ee884722cd6a7a458178"
+    },
+    {
+      "file": "matched_parts/matched.part-0001.csv.gz",
+      "row_start": 184703,
+      "row_stop_exclusive": 369406,
+      "rows": 184703,
+      "bytes": 5158568,
+      "sha256": "a4d91b10bcc9627facb0b7bfcb086814506f805e7fd65548e420dff3439e18ce"
+    },
+    {
+      "file": "matched_parts/matched.part-0002.csv.gz",
+      "row_start": 369406,
+      "row_stop_exclusive": 554109,
+      "rows": 184703,
+      "bytes": 5194471,
+      "sha256": "3bf39adbe3165d856375e56dc948e104b5197b3c376b96bed14be8a5cca27353"
+    },
+    {
+      "file": "matched_parts/matched.part-0003.csv.gz",
+      "row_start": 554109,
+      "row_stop_exclusive": 738812,
+      "rows": 184703,
+      "bytes": 5092223,
+      "sha256": "02c7de80a7b9c3a4f48146e646c5b14de2c920fcfa8b1d5bc91abe9e61ca6fcd"
+    },
+    {
+      "file": "matched_parts/matched.part-0004.csv.gz",
+      "row_start": 738812,
+      "row_stop_exclusive": 923515,
+      "rows": 184703,
+      "bytes": 5036307,
+      "sha256": "7acb199519067f698272412d2ccab32c735e3dc8b8a95048551028ae8de9ad8a"
+    },
+    {
+      "file": "matched_parts/matched.part-0005.csv.gz",
+      "row_start": 923515,
+      "row_stop_exclusive": 924318,
+      "rows": 803,
+      "bytes": 21941,
+      "sha256": "2720c3e60c9b7c06f53ceace53bb5883efb66128e552fff605067e99b7ae1240"
+    }
+  ]
+}
