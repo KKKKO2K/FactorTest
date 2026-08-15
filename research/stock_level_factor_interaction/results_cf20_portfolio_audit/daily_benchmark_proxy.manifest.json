@@ -1,0 +1,26 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "daily_benchmark_proxy.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 15588,
+  "columns": [
+    "date",
+    "universe",
+    "cap_proxy_ret",
+    "ew_proxy_ret",
+    "cap_missing_weight",
+    "n_benchmark_names"
+  ],
+  "parts": [
+    {
+      "file": "daily_benchmark_proxy_parts/daily_benchmark_proxy.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 15588,
+      "rows": 15588,
+      "bytes": 362886,
+      "sha256": "d1bb42905a2dca4d494355b0b56d0c617161c75c2fc9286e062720ee8b2e5351"
+    }
+  ]
+}
