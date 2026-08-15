@@ -1,0 +1,92 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "sleeve_holdings.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 4953600,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "factor",
+    "family",
+    "code",
+    "sleeve_weight"
+  ],
+  "parts": [
+    {
+      "file": "sleeve_holdings_parts/sleeve_holdings.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 599082,
+      "rows": 599082,
+      "bytes": 2482371,
+      "sha256": "e426d904968395c5fd7f99c2680b5eb29f48b9a937b2ce5a04544ca939360ed1"
+    },
+    {
+      "file": "sleeve_holdings_parts/sleeve_holdings.part-0001.csv.gz",
+      "row_start": 599082,
+      "row_stop_exclusive": 1198164,
+      "rows": 599082,
+      "bytes": 2497593,
+      "sha256": "7d0f041c0f066b8f75c360382a7444a05d2e9a5efe944a9f9f3e75e0c3f7174d"
+    },
+    {
+      "file": "sleeve_holdings_parts/sleeve_holdings.part-0002.csv.gz",
+      "row_start": 1198164,
+      "row_stop_exclusive": 1797246,
+      "rows": 599082,
+      "bytes": 2501889,
+      "sha256": "a01aee036edef70aaf4e777691677161eb9a4a823577ec1b2a3ebf0ba3cf31b0"
+    },
+    {
+      "file": "sleeve_holdings_parts/sleeve_holdings.part-0003.csv.gz",
+      "row_start": 1797246,
+      "row_stop_exclusive": 2396328,
+      "rows": 599082,
+      "bytes": 2528964,
+      "sha256": "0eda1d38d5408f8d5d856097f29077407f12d030d677e35927f55478869c037f"
+    },
+    {
+      "file": "sleeve_holdings_parts/sleeve_holdings.part-0004.csv.gz",
+      "row_start": 2396328,
+      "row_stop_exclusive": 2995410,
+      "rows": 599082,
+      "bytes": 2538524,
+      "sha256": "6c9d844be29dc1f4b02c60ea4326e99909745b83708d1acc7dcc8f37f21d2611"
+    },
+    {
+      "file": "sleeve_holdings_parts/sleeve_holdings.part-0005.csv.gz",
+      "row_start": 2995410,
+      "row_stop_exclusive": 3594492,
+      "rows": 599082,
+      "bytes": 2531117,
+      "sha256": "54fc309874e300230c702ba23debb6a18feb63aaf4a3e3501a94891750ed1cc9"
+    },
+    {
+      "file": "sleeve_holdings_parts/sleeve_holdings.part-0006.csv.gz",
+      "row_start": 3594492,
+      "row_stop_exclusive": 4193574,
+      "rows": 599082,
+      "bytes": 2547019,
+      "sha256": "ca2e025f01a538dd40e5202ec17ca9f127698d9699a4bdbbee3d5d9a05b49215"
+    },
+    {
+      "file": "sleeve_holdings_parts/sleeve_holdings.part-0007.csv.gz",
+      "row_start": 4193574,
+      "row_stop_exclusive": 4792656,
+      "rows": 599082,
+      "bytes": 2552283,
+      "sha256": "76ca2deb201db337f7e03f6647c7bc83f5cbb7c05ee23d6a9fe1f28ebf56e138"
+    },
+    {
+      "file": "sleeve_holdings_parts/sleeve_holdings.part-0008.csv.gz",
+      "row_start": 4792656,
+      "row_stop_exclusive": 4953600,
+      "rows": 160944,
+      "bytes": 687177,
+      "sha256": "c1faa6cbbcd049be3b1aeed3f4927a13295e2aea4cad59941cd71fc8d043ad16"
+    }
+  ]
+}

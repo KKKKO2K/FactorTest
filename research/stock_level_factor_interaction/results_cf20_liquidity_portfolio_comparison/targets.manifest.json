@@ -1,0 +1,50 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "targets.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 2599326,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "code",
+    "weight"
+  ],
+  "parts": [
+    {
+      "file": "targets_parts/targets.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 771842,
+      "rows": 771842,
+      "bytes": 3192186,
+      "sha256": "e58c82e234046b25bdf7bf1663678a2c1b21534ab9a180333531d6fe0ad75d21"
+    },
+    {
+      "file": "targets_parts/targets.part-0001.csv.gz",
+      "row_start": 771842,
+      "row_stop_exclusive": 1543684,
+      "rows": 771842,
+      "bytes": 3215814,
+      "sha256": "0ab27d607bbd109689084934facf80048846f47a9df08087af36baf7b1b516eb"
+    },
+    {
+      "file": "targets_parts/targets.part-0002.csv.gz",
+      "row_start": 1543684,
+      "row_stop_exclusive": 2315526,
+      "rows": 771842,
+      "bytes": 3230918,
+      "sha256": "62cc4a32f5fc5b1960cb6dd5fddb5c4455a07fdda6d52a3a0b2c3c5444c4a078"
+    },
+    {
+      "file": "targets_parts/targets.part-0003.csv.gz",
+      "row_start": 2315526,
+      "row_stop_exclusive": 2599326,
+      "rows": 283800,
+      "bytes": 1193287,
+      "sha256": "c45dc317b9212f80bc2ae0c2eef1bba97be1de09aa825770dc9636f9d88d3b44"
+    }
+  ]
+}
