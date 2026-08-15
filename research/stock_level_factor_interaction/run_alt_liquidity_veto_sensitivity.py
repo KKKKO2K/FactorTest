@@ -9,9 +9,11 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'research/liquidity_cross_factor'))
 sys.path.insert(0, str(ROOT / 'research/stock_level_factor_interaction'))
+sys.path.insert(0, str(ROOT / 'research/common'))
 import run_cross_factor_liquidity as base
 import run_multi_universe_liquidity as multi
 import run_cf20_decomposition_liquidity_ranges as core
+from chunked_csv import write_chunked_csv
 
 OUT = Path(__file__).resolve().parent / 'results_alt_liquidity_veto_sensitivity'
 OUT.mkdir(parents=True, exist_ok=True)
@@ -119,7 +121,7 @@ def run():
                             })
                             holdings[key] = names
     p = pd.DataFrame(rows)
-    p.to_csv(OUT / 'paths.csv', index=False)
+    write_chunked_csv(p, OUT / 'paths.csv', index=False, target_mb=40)
     return p
 
 
@@ -130,7 +132,7 @@ def evaluate(p: pd.DataFrame):
     x['turnover_delta'] = x.turnover - x.base_turnover
     for c in COSTS:
         x[f'net_delta_{c}'] = x.gross_delta - x.turnover_delta * c / 10000
-    x.to_csv(OUT / 'matched.csv', index=False)
+    write_chunked_csv(x, OUT / 'matched.csv', index=False, target_mb=40)
 
     stats=[]; fam=[]; boots=[]
     for key,g in x.groupby(['metric','strategy','universe','horizon','sample']):
@@ -208,6 +210,7 @@ def report(stats, fam):
           '- A PASS means positive H10 30bp-net incremental edge in all three historical core blocks for exactly the same metric/cutoff/universe.',
           '- ACT5 is a benchmark, not a selection target. The key question is whether other metric families reproduce the same low-liquidity or extreme-activity quality-control effect.',
           '- ADV20 and TURNOVER20 are liquidity-level measures; ACT1/ACT5 are activity-shock measures; AMIHUD20 is a price-impact illiquidity measure. Similar results across these groups would be stronger evidence of a general liquidity-quality mechanism.',
+          '- Large path/matched intermediates are preserved as ordered gzip CSV chunks plus manifests under GitHub-safe per-file sizes.',
           '- H5/H20 and 2025/2026 remain robustness/stress diagnostics and do not select cutoffs.','']
     return '\n'.join(L)+'\n'
 
