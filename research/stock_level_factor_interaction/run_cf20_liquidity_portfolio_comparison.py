@@ -29,7 +29,7 @@ FACTOR_NAMES = tuple(core.FACTOR_FAMILY)
 N_FACTORS = len(FACTOR_NAMES)
 UNIVERSES = ('KOSPI_EX_K200', 'KOSDAQ')
 
-# Frozen from the completed stock-level / horizon / phase screens.  No new
+# Frozen from the completed stock-level / horizon / phase screens. No new
 # cutoff search is performed in this portfolio stage.
 STRATEGIES = {
     'KOSPI_EX_K200': {
@@ -50,8 +50,8 @@ STRATEGIES = {
     },
 }
 
-# Cross-universe 50/50 portfolios.  These are rule families, not ex-post
-# optimized combinations.
+# Cross-universe 50/50 portfolios. These are coherent rule-family comparisons,
+# not ex-post optimized combinations.
 COMBINED = {
     'CF20_BASE': ('CF20', 'CF20'),
     'ACT5_RULE': ('ACT5_LOW10', 'ACT5_LOW30'),
@@ -91,8 +91,7 @@ def aggregate_sleeves(sleeve_names: dict[str, list[str]]) -> pd.Series | None:
     if set(sleeve_names) != set(FACTOR_NAMES):
         return None
     w = defaultdict(float)
-    sleeve_w = 1.0 / N_FACTORS
-    name_w = sleeve_w / TOPN
+    name_w = 1.0 / N_FACTORS / TOPN
     for factor in FACTOR_NAMES:
         names = sleeve_names[factor]
         if len(names) != TOPN:
@@ -105,7 +104,33 @@ def aggregate_sleeves(sleeve_names: dict[str, list[str]]) -> pd.Series | None:
     return s
 
 
-def build_targets() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def persist_target_store(store: dict, phase_map: dict[pd.Timestamp, int]) -> pd.DataFrame:
+    index_rows = []
+    for universe, strats in store.items():
+        for strategy, by_date in strats.items():
+            rows = []
+            for dt, target in sorted(by_date.items()):
+                phase = phase_map[dt]
+                for code, weight in target.items():
+                    rows.append({
+                        'date': dt, 'phase': phase, 'universe': universe,
+                        'strategy': strategy, 'code': code, 'weight': float(weight),
+                        'factor_count': int(round(float(weight) * N_FACTORS * TOPN)),
+                    })
+            df = pd.DataFrame(rows)
+            logical = OUT / f'targets_{universe}_{strategy}.csv'
+            manifest = write_chunked_csv(df, logical, index=False, target_mb=40)
+            index_rows.append({
+                'universe': universe, 'strategy': strategy,
+                'manifest': manifest.name, 'rows': len(df), 'dates': len(by_date),
+            })
+            del df, rows
+    out = pd.DataFrame(index_rows)
+    out.to_csv(OUT / 'targets_index.csv', index=False)
+    return out
+
+
+def build_targets() -> tuple[dict, pd.DataFrame, dict[pd.Timestamp, int], pd.DataFrame]:
     returns, mcap, k200 = base.load_basic()
     markets = multi.load_market_by_date()
     ta = base.load_trading_amount()
@@ -116,7 +141,10 @@ def build_targets() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     common = [d for d in common if d >= base.START]
     phase_map = {d: i % H for i, d in enumerate(common)}
 
-    target_rows: list[dict] = []
+    store = {
+        u: {s: {} for s in STRATEGIES[u]}
+        for u in UNIVERSES
+    }
     sleeve_rows: list[dict] = []
     quality_rows: list[dict] = []
 
@@ -164,9 +192,6 @@ def build_targets() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
             if failed:
                 continue
 
-            # Require all frozen candidates to be constructible on the same date,
-            # so strategy NAV histories are matched rather than benefiting from
-            # different warm-up / missing-data windows.
             aggregate: dict[str, pd.Series] = {}
             for strategy, sleeves in strat_sleeves.items():
                 target = aggregate_sleeves(sleeves)
@@ -177,54 +202,37 @@ def build_targets() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
             if failed:
                 continue
 
+            # Every strategy is constructible on this date, so histories remain
+            # matched. Store aggregate targets in memory and exact factor-sleeve
+            # membership compactly (20 codes in one row) for later reuse.
             for strategy, target in aggregate.items():
+                store[universe][strategy][dt] = target
                 hhi = float((target ** 2).sum())
-                top_weight = float(target.max())
-                eff_n = float(1.0 / hhi) if hhi > 0 else np.nan
                 quality_rows.append({
                     'date': dt, 'phase': phase, 'universe': universe, 'strategy': strategy,
-                    'n_names': int(len(target)), 'hhi': hhi, 'effective_n': eff_n,
-                    'top_weight': top_weight,
+                    'n_names': int(len(target)), 'hhi': hhi,
+                    'effective_n': float(1.0 / hhi) if hhi > 0 else np.nan,
+                    'top_weight': float(target.max()),
                 })
-                for code, weight in target.items():
-                    target_rows.append({
-                        'date': dt, 'phase': phase, 'universe': universe,
-                        'strategy': strategy, 'code': code, 'weight': float(weight),
-                    })
                 for factor, names in strat_sleeves[strategy].items():
-                    for code in names:
-                        sleeve_rows.append({
-                            'date': dt, 'phase': phase, 'universe': universe,
-                            'strategy': strategy, 'factor': factor,
-                            'family': core.FACTOR_FAMILY[factor], 'code': code,
-                            'sleeve_weight': 1.0 / N_FACTORS / TOPN,
-                        })
+                    sleeve_rows.append({
+                        'date': dt, 'phase': phase, 'universe': universe,
+                        'strategy': strategy, 'factor': factor,
+                        'family': core.FACTOR_FAMILY[factor],
+                        'codes': '|'.join(names),
+                    })
 
-    targets = pd.DataFrame(target_rows)
+    persist_target_store(store, phase_map)
     sleeves = pd.DataFrame(sleeve_rows)
+    write_chunked_csv(sleeves, OUT / 'sleeve_holdings_compact.csv', index=False, target_mb=40)
     quality = pd.DataFrame(quality_rows)
-    write_chunked_csv(targets, OUT / 'targets.csv', index=False, target_mb=40)
-    write_chunked_csv(sleeves, OUT / 'sleeve_holdings.csv', index=False, target_mb=40)
     quality.to_csv(OUT / 'target_quality.csv', index=False)
-    return targets, returns, quality
+    return store, returns, phase_map, quality
 
 
-def target_dict(targets: pd.DataFrame, universe: str, strategy: str) -> dict[pd.Timestamp, pd.Series]:
-    z = targets[(targets.universe == universe) & (targets.strategy == strategy)]
-    out: dict[pd.Timestamp, pd.Series] = {}
-    for dt, g in z.groupby('date', sort=True):
-        s = pd.Series(g.weight.to_numpy(float), index=g.code.astype(str)).groupby(level=0).sum()
-        out[pd.Timestamp(dt)] = s / s.sum()
-    return out
-
-
-def combine_target_dicts(
-    targets: pd.DataFrame,
-    left_strategy: str,
-    right_strategy: str,
-) -> dict[pd.Timestamp, pd.Series]:
-    left = target_dict(targets, 'KOSPI_EX_K200', left_strategy)
-    right = target_dict(targets, 'KOSDAQ', right_strategy)
+def combine_target_dicts(store: dict, left_strategy: str, right_strategy: str) -> dict[pd.Timestamp, pd.Series]:
+    left = store['KOSPI_EX_K200'][left_strategy]
+    right = store['KOSDAQ'][right_strategy]
     dates = sorted(set(left) & set(right))
     out: dict[pd.Timestamp, pd.Series] = {}
     for dt in dates:
@@ -249,7 +257,6 @@ def simulate_one(
 
     current = pd.Series(dtype=float)
     rows: list[dict] = []
-    rebal_count = 0
 
     for dt in dates:
         gross_ret = 0.0
@@ -274,12 +281,14 @@ def simulate_one(
             target = targets_by_date[dt]
             if len(current):
                 union = current.index.union(target.index)
-                turnover = float(0.5 * (current.reindex(union, fill_value=0.0) - target.reindex(union, fill_value=0.0)).abs().sum())
+                turnover = float(0.5 * (
+                    current.reindex(union, fill_value=0.0)
+                    - target.reindex(union, fill_value=0.0)
+                ).abs().sum())
             else:
                 turnover = 1.0
             current = target.copy()
             rebalanced = True
-            rebal_count += 1
             n_names = len(current)
             hhi = float((current ** 2).sum())
             top_weight = float(current.max())
@@ -298,25 +307,19 @@ def simulate_one(
     return pd.DataFrame(rows)
 
 
-def simulate_all(targets: pd.DataFrame, returns: pd.DataFrame) -> pd.DataFrame:
-    common = sorted(targets.date.drop_duplicates())
-    # Keep phase assignment identical to target construction. Every eligible
-    # date appears once in targets and preserves the original date modulo.
-    phase_lookup = targets[['date', 'phase']].drop_duplicates().set_index('date')['phase'].to_dict()
-
+def simulate_all(store: dict, returns: pd.DataFrame, phase_map: dict[pd.Timestamp, int]) -> pd.DataFrame:
     frames: list[pd.DataFrame] = []
     for universe in UNIVERSES:
-        for strategy in STRATEGIES[universe]:
-            td = target_dict(targets, universe, strategy)
+        for strategy, td in store[universe].items():
             for phase in range(H):
-                f = simulate_one(returns, td, phase, phase_lookup, universe, strategy)
+                f = simulate_one(returns, td, phase, phase_map, universe, strategy)
                 if len(f):
                     frames.append(f)
 
     for strategy, (left, right) in COMBINED.items():
-        td = combine_target_dicts(targets, left, right)
+        td = combine_target_dicts(store, left, right)
         for phase in range(H):
-            f = simulate_one(returns, td, phase, phase_lookup, 'NON_K200_50_50', strategy)
+            f = simulate_one(returns, td, phase, phase_map, 'NON_K200_50_50', strategy)
             if len(f):
                 frames.append(f)
 
@@ -373,6 +376,7 @@ def period_stats(daily: pd.DataFrame) -> pd.DataFrame:
                 continue
             days = len(g)
             years = days / 252.0
+            rebal = g[g.rebalanced.eq(1)]
             for cost in COSTS_BP:
                 r = g[f'net{cost}_ret']
                 cagr = ann_cagr(r)
@@ -386,11 +390,11 @@ def period_stats(daily: pd.DataFrame) -> pd.DataFrame:
                     'calmar': cagr / abs(mdd) if np.isfinite(cagr) and np.isfinite(mdd) and mdd < 0 else np.nan,
                     'worst_20d': worst_20d(r),
                     'annual_turnover': float(g.turnover.sum() / years) if years > 0 else np.nan,
-                    'avg_rebalance_turnover': float(g.loc[g.rebalanced.eq(1), 'turnover'].mean()),
+                    'avg_rebalance_turnover': float(rebal.turnover.mean()),
                     'n_rebalances': int(g.rebalanced.sum()),
-                    'avg_n_names': float(g.loc[g.rebalanced.eq(1), 'n_names'].mean()),
-                    'avg_hhi': float(g.loc[g.rebalanced.eq(1), 'hhi'].mean()),
-                    'avg_top_weight': float(g.loc[g.rebalanced.eq(1), 'top_weight'].mean()),
+                    'avg_n_names': float(rebal.n_names.mean()),
+                    'avg_hhi': float(rebal.hhi.mean()),
+                    'avg_top_weight': float(rebal.top_weight.mean()),
                     'avg_missing_return_weight': float(g.missing_return_weight.mean()),
                 })
     out = pd.DataFrame(rows)
@@ -447,7 +451,7 @@ def compare_to_baseline(stats: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def baseline_summary(stats: pd.DataFrame) -> pd.DataFrame:
+def portfolio_summary(stats: pd.DataFrame) -> pd.DataFrame:
     rows=[]
     for (universe, strategy, period, cost), g in stats.groupby(['universe','strategy','period','cost_bp']):
         rows.append({
@@ -458,6 +462,7 @@ def baseline_summary(stats: pd.DataFrame) -> pd.DataFrame:
             'median_sharpe': g.sharpe.median(), 'worst_phase_sharpe': g.sharpe.min(),
             'median_turnover': g.annual_turnover.median(),
             'median_n_names': g.avg_n_names.median(), 'median_top_weight': g.avg_top_weight.median(),
+            'median_missing_return_weight': g.avg_missing_return_weight.median(),
         })
     out=pd.DataFrame(rows)
     out.to_csv(OUT/'portfolio_summary.csv',index=False)
@@ -516,21 +521,22 @@ def make_report(summary: pd.DataFrame, comp: pd.DataFrame) -> str:
         '- Median-across-phase results are more important than the best single phase. Worst-phase CAGR/MDD are retained to expose timing dependence.',
         '- KOSPI_EX_K200 and KOSDAQ results should be read separately before using the 50/50 combined portfolio because their liquidity mechanisms differ.',
         '- Missing held-stock daily returns are treated as 0 for that day; the average missing-return weight is saved as a QA field.',
-        '- Large targets, sleeve holdings, and daily NAV intermediates are retained as GitHub-safe chunked gzip CSVs with manifests for later reuse.', '',
+        '- Exact aggregate target weights are saved strategy-by-strategy as chunked gzip CSVs; exact 20-name factor sleeves are saved compactly as one row per sleeve. Large daily NAV intermediates are also chunked with manifests.', '',
     ]
     return '\n'.join(L)
 
 
 def main() -> None:
-    targets, returns, quality = build_targets()
-    daily = simulate_all(targets, returns)
+    store, returns, phase_map, quality = build_targets()
+    daily = simulate_all(store, returns, phase_map)
     stats = period_stats(daily)
-    summary = baseline_summary(stats)
+    summary = portfolio_summary(stats)
     comp = compare_to_baseline(stats)
     text = make_report(summary, comp)
     (OUT / 'RESEARCH_SUMMARY.md').write_text(text, encoding='utf-8')
+    n_target_dates = sum(len(x) for u in store.values() for x in u.values())
     print(text)
-    print(f'target_rows={len(targets):,}; daily_rows={len(daily):,}; stats={len(stats):,}')
+    print(f'target_strategy_dates={n_target_dates:,}; daily_rows={len(daily):,}; stats={len(stats):,}')
 
 
 if __name__ == '__main__':
