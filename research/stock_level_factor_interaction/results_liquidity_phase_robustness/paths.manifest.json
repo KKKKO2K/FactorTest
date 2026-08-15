@@ -1,0 +1,30 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "paths.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 247336,
+  "columns": [
+    "date",
+    "phase",
+    "sample",
+    "universe",
+    "factor",
+    "family",
+    "metric",
+    "strategy",
+    "gross",
+    "turnover"
+  ],
+  "parts": [
+    {
+      "file": "paths_parts/paths.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 247336,
+      "rows": 247336,
+      "bytes": 2442902,
+      "sha256": "043d216ba1080244962fe16ca31dca53806eb4a6f36e76ea78a8df04cf335fd3"
+    }
+  ]
+}

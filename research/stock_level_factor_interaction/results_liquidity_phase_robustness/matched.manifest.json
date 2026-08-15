@@ -1,0 +1,35 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "matched.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 205912,
+  "columns": [
+    "date",
+    "phase",
+    "sample",
+    "universe",
+    "factor",
+    "family",
+    "metric",
+    "strategy",
+    "gross",
+    "turnover",
+    "base_gross",
+    "base_turnover",
+    "gross_delta",
+    "turnover_delta",
+    "net_delta_30"
+  ],
+  "parts": [
+    {
+      "file": "matched_parts/matched.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 205912,
+      "rows": 205912,
+      "bytes": 3826475,
+      "sha256": "6bf243b1a37b0a0579486bfba93601003ef1fae67f8a6c6ea95949f1352b4de0"
+    }
+  ]
+}
