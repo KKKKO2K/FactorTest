@@ -142,12 +142,13 @@ def report(summary: pd.DataFrame,family: pd.DataFrame)->str:
     lines=['# H10 Liquidity Rebalance-Phase Robustness','',
            'Each candidate is frozen from the prior H10 screen. All 10 possible non-overlapping 10-trading-day rebalance offsets are evaluated.','',
            'Headline fields are mean edge across phases, worst phase, and positive phase count. 30bp turnover cost is included.','']
+    samples = tuple(core.CORE) + ('BULL_2025','YTD_2026')
     for u,candidates in CANDIDATES.items():
         lines += [f'## {u}','']
         for metric,strategy in candidates:
             lines.append(f'### {metric} {strategy}')
             z=summary[(summary.universe==u)&(summary.metric==metric)&(summary.strategy==strategy)]
-            for sample in core.CORE+['BULL_2025','YTD_2026']:
+            for sample in samples:
                 q=z[z['sample']==sample]
                 if len(q):
                     r=q.iloc[0]
