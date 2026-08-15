@@ -1,0 +1,41 @@
+name: CF20 Portfolio Audit
+
+on:
+  push:
+    branches: [ research/factor-lab-v2 ]
+    paths:
+      - 'research/stock_level_factor_interaction/audit_cf20_portfolio_tieout.py'
+      - '.github/workflows/cf20-portfolio-audit.yml'
+      - 'research/common/chunked_csv.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cf20-portfolio-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/factor-lab-v2
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade numpy pandas
+      - name: Run portfolio audit
+        working-directory: research/stock_level_factor_interaction
+        run: python audit_cf20_portfolio_tieout.py
+      - name: Commit audit outputs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/stock_level_factor_interaction/results_cf20_portfolio_audit
+          git diff --cached --quiet || git commit -m 'Add CF20 portfolio audit results [skip ci]'
+          git pull --rebase origin research/factor-lab-v2
+          git push origin HEAD:research/factor-lab-v2
