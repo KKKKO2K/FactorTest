@@ -91,5 +91,6 @@ Metrics: ACT5 benchmark; ADV20 = 20D average trading amount; TURNOVER20 = 20D av
 - A PASS means positive H10 30bp-net incremental edge in all three historical core blocks for exactly the same metric/cutoff/universe.
 - ACT5 is a benchmark, not a selection target. The key question is whether other metric families reproduce the same low-liquidity or extreme-activity quality-control effect.
 - ADV20 and TURNOVER20 are liquidity-level measures; ACT1/ACT5 are activity-shock measures; AMIHUD20 is a price-impact illiquidity measure. Similar results across these groups would be stronger evidence of a general liquidity-quality mechanism.
+- Large path/matched intermediates are preserved as ordered gzip CSV chunks plus manifests under GitHub-safe per-file sizes.
 - H5/H20 and 2025/2026 remain robustness/stress diagnostics and do not select cutoffs.
 

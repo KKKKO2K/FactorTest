@@ -1,0 +1,70 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "matched.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 860218,
+  "columns": [
+    "date",
+    "sample",
+    "horizon",
+    "universe",
+    "factor",
+    "family",
+    "metric",
+    "strategy",
+    "gross",
+    "turnover",
+    "mean_metric_rank",
+    "base_gross",
+    "base_turnover",
+    "gross_delta",
+    "turnover_delta",
+    "net_delta_0",
+    "net_delta_30",
+    "net_delta_60"
+  ],
+  "parts": [
+    {
+      "file": "matched_parts/matched.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 178644,
+      "rows": 178644,
+      "bytes": 3273863,
+      "sha256": "c8ab171fa958bc97df4c91c1e7c2bf7bbb136ea591cd84f1e2f32db02b204470"
+    },
+    {
+      "file": "matched_parts/matched.part-0001.csv.gz",
+      "row_start": 178644,
+      "row_stop_exclusive": 357288,
+      "rows": 178644,
+      "bytes": 3289036,
+      "sha256": "0193a3c57c2f05023596355338571cdfed779ea68fd628dc92b850f01a79223b"
+    },
+    {
+      "file": "matched_parts/matched.part-0002.csv.gz",
+      "row_start": 357288,
+      "row_stop_exclusive": 535932,
+      "rows": 178644,
+      "bytes": 3434398,
+      "sha256": "2f8071328812fb42fa8fce32374b32722d41b59f2b66f3976cd602fe81498fc0"
+    },
+    {
+      "file": "matched_parts/matched.part-0003.csv.gz",
+      "row_start": 535932,
+      "row_stop_exclusive": 714576,
+      "rows": 178644,
+      "bytes": 3400940,
+      "sha256": "06becd1369fcbb7c88bfb0e2890cd962e7f40b45a2d426f3708c89ed72e24879"
+    },
+    {
+      "file": "matched_parts/matched.part-0004.csv.gz",
+      "row_start": 714576,
+      "row_stop_exclusive": 860218,
+      "rows": 145642,
+      "bytes": 2637803,
+      "sha256": "2bf88b849e0a0750b5e8883b4b2f7ef77483810dab76e15b2161b263d37c7cbc"
+    }
+  ]
+}
