@@ -10,6 +10,7 @@ from typing import Iterable
 import pandas as pd
 
 DEFAULT_TARGET_MB = 40
+_ORIGINAL_TO_CSV = pd.DataFrame.to_csv
 
 
 def _sha256(path: Path) -> str:
@@ -50,7 +51,7 @@ def write_chunked_csv(
     n_rows = len(df)
     if n_rows:
         sample_n = min(20_000, n_rows)
-        sample = df.iloc[:sample_n].to_csv(index=index)
+        sample = _ORIGINAL_TO_CSV(df.iloc[:sample_n], None, index=index)
         bytes_per_row = max(1.0, len(sample.encode('utf-8')) / sample_n)
         rows_per_part = max(1, int(target_mb * 1024 * 1024 / bytes_per_row))
     else:
@@ -64,7 +65,8 @@ def write_chunked_csv(
         chunk = df.iloc[start:stop]
         filename = f'{stem}.part-{i:04d}.csv.gz'
         path = parts_dir / filename
-        chunk.to_csv(
+        _ORIGINAL_TO_CSV(
+            chunk,
             path,
             index=index,
             compression={'method': 'gzip', 'compresslevel': compression_level, 'mtime': 0},
