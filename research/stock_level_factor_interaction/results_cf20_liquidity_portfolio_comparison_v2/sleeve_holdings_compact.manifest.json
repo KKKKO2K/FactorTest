@@ -1,0 +1,35 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "sleeve_holdings_compact.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 247680,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "factor",
+    "family",
+    "codes"
+  ],
+  "parts": [
+    {
+      "file": "sleeve_holdings_compact_parts/sleeve_holdings_compact.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 196106,
+      "rows": 196106,
+      "bytes": 2661075,
+      "sha256": "734b03641c619b2357dd03f51c3fbfb9c4b519687a55df293c7ddea677ba0ceb"
+    },
+    {
+      "file": "sleeve_holdings_compact_parts/sleeve_holdings_compact.part-0001.csv.gz",
+      "row_start": 196106,
+      "row_stop_exclusive": 247680,
+      "rows": 51574,
+      "bytes": 692705,
+      "sha256": "69c3363b6b7960501fb52389b50dbf9008b465f800bb0b1f4760dd8837db02ff"
+    }
+  ]
+}

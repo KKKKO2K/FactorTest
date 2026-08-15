@@ -1,0 +1,27 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "targets_KOSPI_EX_K200_TURNOVER20_TOP01_LOW10.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 201989,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "code",
+    "weight",
+    "factor_count"
+  ],
+  "parts": [
+    {
+      "file": "targets_KOSPI_EX_K200_TURNOVER20_TOP01_LOW10_parts/targets_KOSPI_EX_K200_TURNOVER20_TOP01_LOW10.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 201989,
+      "rows": 201989,
+      "bytes": 771398,
+      "sha256": "22d28e31d870f969cb3417906f7d06124b4c204767dd91502c7cc367d7dd2f41"
+    }
+  ]
+}

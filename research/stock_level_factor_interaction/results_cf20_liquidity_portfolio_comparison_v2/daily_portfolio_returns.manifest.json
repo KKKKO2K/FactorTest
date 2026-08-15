@@ -1,0 +1,42 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "daily_portfolio_returns.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 437835,
+  "columns": [
+    "date",
+    "universe",
+    "strategy",
+    "phase",
+    "gross_ret",
+    "turnover",
+    "rebalanced",
+    "missing_return_weight",
+    "n_names",
+    "hhi",
+    "top_weight",
+    "net0_ret",
+    "net30_ret",
+    "net60_ret"
+  ],
+  "parts": [
+    {
+      "file": "daily_portfolio_returns_parts/daily_portfolio_returns.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 244111,
+      "rows": 244111,
+      "bytes": 10313090,
+      "sha256": "f5955a064abb10f2cb2a06bad73895d1891223a9f4120ea683d0788f10d0c4c4"
+    },
+    {
+      "file": "daily_portfolio_returns_parts/daily_portfolio_returns.part-0001.csv.gz",
+      "row_start": 244111,
+      "row_stop_exclusive": 437835,
+      "rows": 193724,
+      "bytes": 8237706,
+      "sha256": "d074f7b303e828a350ee38a1627a227d5c642038ebe7037a19028ec19c190668"
+    }
+  ]
+}

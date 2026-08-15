@@ -1,0 +1,27 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "targets_KOSPI_EX_K200_AMIHUD20_TOP05.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 207310,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "code",
+    "weight",
+    "factor_count"
+  ],
+  "parts": [
+    {
+      "file": "targets_KOSPI_EX_K200_AMIHUD20_TOP05_parts/targets_KOSPI_EX_K200_AMIHUD20_TOP05.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 207310,
+      "rows": 207310,
+      "bytes": 765320,
+      "sha256": "d71ab88ada739df747ef88c57ac6316f7e502fcf92c0c32e6fbd76dac67afef0"
+    }
+  ]
+}

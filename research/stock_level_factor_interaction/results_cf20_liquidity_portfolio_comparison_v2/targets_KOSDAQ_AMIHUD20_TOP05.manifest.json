@@ -1,0 +1,27 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "targets_KOSDAQ_AMIHUD20_TOP05.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 234201,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "code",
+    "weight",
+    "factor_count"
+  ],
+  "parts": [
+    {
+      "file": "targets_KOSDAQ_AMIHUD20_TOP05_parts/targets_KOSDAQ_AMIHUD20_TOP05.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 234201,
+      "rows": 234201,
+      "bytes": 855708,
+      "sha256": "77ebc5370e5a30977fd30de043fe7c38a5903efb384d779cd1114c803e99e312"
+    }
+  ]
+}

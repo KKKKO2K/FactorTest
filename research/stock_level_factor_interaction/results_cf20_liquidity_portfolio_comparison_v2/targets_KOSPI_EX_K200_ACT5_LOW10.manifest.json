@@ -1,0 +1,27 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "targets_KOSPI_EX_K200_ACT5_LOW10.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 203562,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "code",
+    "weight",
+    "factor_count"
+  ],
+  "parts": [
+    {
+      "file": "targets_KOSPI_EX_K200_ACT5_LOW10_parts/targets_KOSPI_EX_K200_ACT5_LOW10.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 203562,
+      "rows": 203562,
+      "bytes": 753984,
+      "sha256": "af22cc0bebfe80bad0af04ab09061954c5d3d840a9d33cdb2b22013b3a85b03b"
+    }
+  ]
+}

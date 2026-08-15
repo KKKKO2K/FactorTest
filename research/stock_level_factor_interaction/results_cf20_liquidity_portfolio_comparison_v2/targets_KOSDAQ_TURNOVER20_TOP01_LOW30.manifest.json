@@ -1,0 +1,27 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "targets_KOSDAQ_TURNOVER20_TOP01_LOW30.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 220151,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "code",
+    "weight",
+    "factor_count"
+  ],
+  "parts": [
+    {
+      "file": "targets_KOSDAQ_TURNOVER20_TOP01_LOW30_parts/targets_KOSDAQ_TURNOVER20_TOP01_LOW30.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 220151,
+      "rows": 220151,
+      "bytes": 820656,
+      "sha256": "57aa17b1eed5de1f509a784700e16050167b49e3d51470cd7852e6b7ad3e7f20"
+    }
+  ]
+}

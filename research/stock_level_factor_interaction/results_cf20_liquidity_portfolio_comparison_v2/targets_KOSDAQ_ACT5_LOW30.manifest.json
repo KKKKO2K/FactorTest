@@ -1,0 +1,27 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "targets_KOSDAQ_ACT5_LOW30.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 221533,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "code",
+    "weight",
+    "factor_count"
+  ],
+  "parts": [
+    {
+      "file": "targets_KOSDAQ_ACT5_LOW30_parts/targets_KOSDAQ_ACT5_LOW30.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 221533,
+      "rows": 221533,
+      "bytes": 795601,
+      "sha256": "f51a06a9636a96a29599363dbec62ff59a342f29d58223570987716f615f193e"
+    }
+  ]
+}

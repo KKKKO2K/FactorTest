@@ -1,0 +1,27 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "targets_KOSDAQ_CF20.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 234493,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "code",
+    "weight",
+    "factor_count"
+  ],
+  "parts": [
+    {
+      "file": "targets_KOSDAQ_CF20_parts/targets_KOSDAQ_CF20.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 234493,
+      "rows": 234493,
+      "bytes": 828610,
+      "sha256": "67d5048cca90b9b5864ad9700ec6d0878c9e32671bba58530327c575620687ce"
+    }
+  ]
+}
