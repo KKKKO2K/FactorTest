@@ -1,0 +1,28 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "direction_detail.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 14046,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "n",
+    "ic_10d",
+    "top20_10d",
+    "bottom20_10d",
+    "top_minus_bottom_10d"
+  ],
+  "parts": [
+    {
+      "file": "direction_detail_parts/direction_detail.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 14046,
+      "rows": 14046,
+      "bytes": 605400,
+      "sha256": "c166d3a9cfa6926c0d79bcad6dd1885c6597a8b586c7e920b577f68ce20d0289"
+    }
+  ]
+}
