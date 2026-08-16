@@ -9,6 +9,7 @@ on:
       - research/weighted_momentum_filter_sol/run_weighted_momentum_filter.py
       - research/weighted_momentum_filter_sol/run_weighted_momentum_filter_ge.py
       - research/weighted_momentum_filter_sol/run_weighted_momentum_filter_exact.py
+      - research/weighted_momentum_filter_sol/run_weighted_momentum_filter_primary.py
       - .github/workflows/weighted-momentum-filter-sol.yml
 
 permissions:
@@ -44,8 +45,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install numpy pandas
 
-      - name: Run exact weighted momentum nonnegative-1M filter research
-        run: python research/weighted_momentum_filter_sol/run_weighted_momentum_filter_exact.py
+      - name: Run exact weighted momentum primary nonnegative-1M filter research
+        run: python research/weighted_momentum_filter_sol/run_weighted_momentum_filter_primary.py
 
       - name: Commit research results to isolated branch
         run: |
@@ -55,7 +56,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No result changes to commit"
           else
-            git commit -m "Run tied-out weighted momentum nonnegative 1M filter recheck"
+            git commit -m "Run tied-out weighted momentum primary nonnegative 1M filter"
             git pull --rebase origin research/factor-lab-sol
             git push origin HEAD:research/factor-lab-sol
           fi
