@@ -15,7 +15,7 @@ permissions:
 
 concurrency:
   group: momentum-filter-sol
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   run-research:
@@ -27,6 +27,13 @@ jobs:
         with:
           ref: research/factor-lab-sol
           fetch-depth: 1
+          sparse-checkout: |
+            source/factor_all_values/reference_snapshots/basic_info
+            source/factor_all_values/모멘텀(12-1)
+            source/factor_all_values/단기모멘텀
+            research/momentum_filter_sol
+            .github/workflows
+          sparse-checkout-cone-mode: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
