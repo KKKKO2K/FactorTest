@@ -1,0 +1,31 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "daily_strategy_returns.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 140790,
+  "columns": [
+    "date",
+    "universe",
+    "strategy",
+    "phase",
+    "gross_ret",
+    "turnover",
+    "rebalanced",
+    "missing_weight",
+    "net0_ret",
+    "net30_ret",
+    "net60_ret"
+  ],
+  "parts": [
+    {
+      "file": "daily_strategy_returns_parts/daily_strategy_returns.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 140790,
+      "rows": 140790,
+      "bytes": 3398018,
+      "sha256": "3944d492ce1bd905abcc93b27f78c338e4b47ef737a4006a39e004b817602f41"
+    }
+  ]
+}

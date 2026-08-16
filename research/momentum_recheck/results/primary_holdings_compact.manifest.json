@@ -1,0 +1,26 @@
+{
+  "format": "chunked_csv_gzip_v1",
+  "logical_filename": "primary_holdings_compact.csv",
+  "compression": "gzip",
+  "index_written": false,
+  "target_uncompressed_mb": 40,
+  "total_rows": 14106,
+  "columns": [
+    "date",
+    "phase",
+    "universe",
+    "strategy",
+    "eligible_n",
+    "codes"
+  ],
+  "parts": [
+    {
+      "file": "primary_holdings_compact_parts/primary_holdings_compact.part-0000.csv.gz",
+      "row_start": 0,
+      "row_stop_exclusive": 14106,
+      "rows": 14106,
+      "bytes": 400752,
+      "sha256": "37445b07394a7acaadf71f6fdd155fd054c42e940b7d3fef82d8f1c30833b7aa"
+    }
+  ]
+}
