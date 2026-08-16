@@ -6,6 +6,7 @@ on:
     paths:
       - 'research/momentum_recheck/run_momentum_recheck.py'
       - 'research/momentum_recheck/run_momentum_recheck_fixed.py'
+      - 'research/momentum_recheck/run_momentum_stage1.py'
       - '.github/workflows/momentum-recheck.yml'
       - 'research/common/chunked_csv.py'
   workflow_dispatch:
@@ -29,14 +30,14 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --upgrade numpy pandas
-      - name: Run weighted momentum recheck
+      - name: Run weighted momentum Stage 1
         working-directory: research/momentum_recheck
-        run: python run_momentum_recheck_fixed.py
+        run: python run_momentum_stage1.py
       - name: Commit research outputs
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add research/momentum_recheck/results
-          git diff --cached --quiet || git commit -m 'Add weighted momentum recheck results [skip ci]'
+          git diff --cached --quiet || git commit -m 'Add weighted momentum Stage 1 results [skip ci]'
           git pull --rebase origin research/factor-lab-v2
           git push origin HEAD:research/factor-lab-v2
