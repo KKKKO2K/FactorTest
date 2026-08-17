@@ -1,0 +1,42 @@
+name: weighted-momentum-threshold-diagnostics-sol
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/factor-lab-sol
+    paths:
+      - research/weighted_momentum_filter_sol/summarize_threshold_diagnostics.py
+      - .github/workflows/weighted-momentum-threshold-diagnostics-sol.yml
+
+permissions:
+  contents: write
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/factor-lab-sol
+          fetch-depth: 1
+          sparse-checkout: |
+            research/weighted_momentum_filter_sol
+            .github/workflows
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pandas
+      - run: python research/weighted_momentum_filter_sol/summarize_threshold_diagnostics.py
+      - run: |
+          git config user.name "factor-lab-sol-bot"
+          git config user.email "factor-lab-sol-bot@users.noreply.github.com"
+          git add research/weighted_momentum_filter_sol/results_threshold/threshold_diagnostics_summary.csv research/weighted_momentum_filter_sol/results_threshold/threshold_diagnostics_2017_2024.csv
+          if git diff --cached --quiet; then
+            echo "No diagnostics changes"
+          else
+            git commit -m "Summarize weighted momentum threshold diagnostics"
+            git pull --rebase origin research/factor-lab-sol
+            git push origin HEAD:research/factor-lab-sol
+          fi
