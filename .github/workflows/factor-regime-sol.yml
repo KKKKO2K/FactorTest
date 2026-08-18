@@ -1,6 +1,5 @@
 name: factor-regime-sol
 
-# retrigger 2026-08-18
 on:
   workflow_dispatch:
   push:
@@ -8,6 +7,7 @@ on:
       - research/factor-lab-sol
     paths:
       - research/factor_regime_sol/run_factor_regime_sol.py
+      - research/factor_regime_sol/run_factor_regime_sol_cached.py
       - .github/workflows/factor-regime-sol.yml
 
 permissions:
@@ -51,7 +51,7 @@ jobs:
           python -m pip install numpy pandas
 
       - name: Run exact weighted-momentum regime research
-        run: python research/factor_regime_sol/run_factor_regime_sol.py
+        run: python research/factor_regime_sol/run_factor_regime_sol_cached.py
 
       - name: Commit results
         run: |
