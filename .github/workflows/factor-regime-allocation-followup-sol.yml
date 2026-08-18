@@ -9,13 +9,6 @@ on:
       - research/factor_regime_sol/run_factor_allocation_followup.py
       - research/factor_regime_sol/run_factor_allocation_followup_v2.py
       - .github/workflows/factor-regime-allocation-followup-sol.yml
-  pull_request:
-    branches:
-      - research/factor-lab-sol
-    paths:
-      - research/factor_regime_sol/run_factor_allocation_followup.py
-      - research/factor_regime_sol/run_factor_allocation_followup_v2.py
-      - .github/workflows/factor-regime-allocation-followup-sol.yml
 
 permissions:
   contents: write
