@@ -48,7 +48,7 @@ jobs:
         run: |
           git config user.name "factor-lab-sol-bot"
           git config user.email "factor-lab-sol-bot@users.noreply.github.com"
-          git add research/factor_regime_sol/results_allocation_followup research/factor_regime_sol/allocation_run_status 2>/dev/null || true
+          git add --sparse research/factor_regime_sol/results_allocation_followup research/factor_regime_sol/allocation_run_status
           git commit -m "Run factor regime allocation follow-up" || exit 0
           git pull --rebase origin research/factor-lab-sol
           git push origin HEAD:research/factor-lab-sol
