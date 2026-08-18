@@ -1,0 +1,3 @@
+/home/runner/work/FactorTest/FactorTest/research/factor_regime_sol/run_factor_allocation_followup.py:119: RuntimeWarning: Mean of empty slice
+  row[f"neg_alt_{metric}_{h}"] = float(np.nanmean(nv)) if nv else np.nan
+done persistence=1832 events=707 summaries=616
