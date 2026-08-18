@@ -1,0 +1,65 @@
+name: primary-liquidity-overlay-sol
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/factor-lab-sol
+    paths:
+      - research/liquidity_overlay_sol/**
+      - .github/workflows/primary-liquidity-overlay-sol.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: primary-liquidity-overlay-sol
+  cancel-in-progress: true
+
+jobs:
+  run-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/factor-lab-sol
+          fetch-depth: 1
+          sparse-checkout: |
+            source/factor_all_values/reference_snapshots/basic_info
+            source/factor_all_values/reference_snapshots/trading_amount
+            source/factor_all_values/OP(12MF_1M_CHG)
+            source/factor_all_values/OP(FY1_1M_CHG)
+            source/factor_all_values/PBR(12MF)
+            source/factor_all_values/PER(12MF)
+            research/weighted_momentum_filter_sol
+            research/liquidity_overlay_sol
+            .github/workflows
+          sparse-checkout-cone-mode: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pandas
+
+      - name: Run primary-factor liquidity overlay research
+        run: python research/liquidity_overlay_sol/run_primary_liquidity_overlay.py
+
+      - name: Commit research results
+        run: |
+          git config user.name "factor-lab-sol-bot"
+          git config user.email "factor-lab-sol-bot@users.noreply.github.com"
+          git add research/liquidity_overlay_sol/results
+          if git diff --cached --quiet; then
+            echo "No result changes to commit"
+          else
+            git commit -m "Run primary-factor liquidity overlay research"
+            git pull --rebase origin research/factor-lab-sol
+            git push origin HEAD:research/factor-lab-sol
+          fi
