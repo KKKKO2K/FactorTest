@@ -50,14 +50,21 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install numpy pandas
 
-      - name: Run exact weighted-momentum regime research
-        run: python research/factor_regime_sol/run_factor_regime_sol_cached.py
+      - name: Run exact weighted-momentum regime research and persist log
+        run: |
+          set +e
+          mkdir -p research/factor_regime_sol/run_status
+          python research/factor_regime_sol/run_factor_regime_sol_cached.py > research/factor_regime_sol/run_status/run.log 2>&1
+          code=$?
+          echo "$code" > research/factor_regime_sol/run_status/exit_code.txt
+          cat research/factor_regime_sol/run_status/run.log
+          exit 0
 
-      - name: Commit results
+      - name: Commit results and run status
         run: |
           git config user.name "factor-lab-sol-bot"
           git config user.email "factor-lab-sol-bot@users.noreply.github.com"
-          git add research/factor_regime_sol/results
+          git add research/factor_regime_sol/results research/factor_regime_sol/run_status 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No result changes to commit"
           else
