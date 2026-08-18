@@ -52,3 +52,5 @@ jobs:
           git commit -m "Run factor regime allocation follow-up" || exit 0
           git pull --rebase origin research/factor-lab-sol
           git push origin HEAD:research/factor-lab-sol
+
+# trigger v2 base workflow
