@@ -8,6 +8,11 @@ on:
       - '.github/workflows/factor-level-finalists.yml'
       - 'research/stock_level_factor_interaction/audit_cf20_portfolio_tieout.py'
       - 'research/common/chunked_csv.py'
+  pull_request:
+    branches: [ research/factor-lab-v2 ]
+    paths:
+      - 'research/stock_level_factor_interaction/run_factor_level_finalists.py'
+      - '.github/workflows/factor-level-finalists.yml'
   workflow_dispatch:
 
 permissions:
