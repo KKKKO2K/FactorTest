@@ -43,9 +43,11 @@ def main():
     p = pd.read_csv(IN / "state_panel.csv")
     p["date"] = pd.to_datetime(p["date"])
 
+    # Forward realized family preferred-leg and spread returns from state date t.
     top5 = f.pivot_table(index=["date", "universe"], columns="family", values="top_abs_5d").sort_index()
     spr5 = f.pivot_table(index=["date", "universe"], columns="family", values="spread_5d").sort_index()
 
+    # Compute within each universe to avoid MultiIndex shift crossing universe boundaries.
     fwd_rows = []
     for u in p.universe.unique():
         t = top5.xs(u, level="universe").sort_index()
@@ -63,6 +65,7 @@ def main():
     fw = pd.DataFrame(fwd_rows)
     x = p.merge(fw, on=["date", "universe"], how="left")
 
+    # 1) Does current preferred-leg sign/state predict that same family's future return?
     persistence = []
     for sample, (lo, hi) in SAMPLES.items():
         z0 = x[(x.date >= lo) & (x.date <= hi)]
@@ -96,6 +99,7 @@ def main():
     pers = pd.DataFrame(persistence)
     pers.to_csv(OUT / "family_persistence.csv", index=False, encoding="utf-8-sig")
 
+    # 2) Momentum R-: basket of currently positive alternative families vs negative alternatives and Momentum.
     rot_rows = []
     for r in x.itertuples(index=False):
         if getattr(r, "momentum_state") != "R-":
@@ -135,6 +139,7 @@ def main():
     sm = pd.DataFrame(summaries)
     sm.to_csv(OUT / "momentum_rminus_summary.csv", index=False, encoding="utf-8-sig")
 
+    # Simple sign-persistence contrast: current POS minus NEG for same family.
     contrasts = []
     q = pers[pers.current_abs_sign.isin(["POS","NEG"])]
     keys = ["sample","universe","family","horizon","metric"]
@@ -168,4 +173,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-# temporary PR trigger
+# temporary PR trigger 2
