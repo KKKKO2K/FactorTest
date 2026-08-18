@@ -1,0 +1,40 @@
+name: Finalist Factor Sleeve Audit
+
+on:
+  push:
+    branches: [ research/finalist-sleeve-audit ]
+    paths:
+      - 'research/stock_level_factor_interaction/run_finalist_sleeve_audit.py'
+      - '.github/workflows/finalist-sleeve-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: finalist-factor-sleeve-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/finalist-sleeve-audit
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade numpy pandas
+      - name: Run finalist sleeve audit
+        working-directory: research/stock_level_factor_interaction
+        run: python run_finalist_sleeve_audit.py
+      - name: Commit finalist audit outputs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/stock_level_factor_interaction/results_finalist_sleeve_audit
+          git diff --cached --quiet || git commit -m 'Add finalist factor-sleeve audit results [skip ci]'
+          git pull --rebase origin research/finalist-sleeve-audit
+          git push origin HEAD:research/finalist-sleeve-audit
