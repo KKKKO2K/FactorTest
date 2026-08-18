@@ -1,5 +1,6 @@
 name: Factor-Level Finalists
 
+# Temporary PR-trigger touch; workflow executes the research/factor-lab-v2 base branch.
 on:
   push:
     branches: [ research/factor-lab-v2 ]
