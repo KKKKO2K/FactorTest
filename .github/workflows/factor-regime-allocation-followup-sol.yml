@@ -1,6 +1,5 @@
 name: factor-regime-allocation-followup-sol
 
-# retrigger 2026-08-18
 on:
   workflow_dispatch:
   push:
@@ -31,12 +30,19 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install numpy pandas
-      - run: python research/factor_regime_sol/run_factor_allocation_followup.py
+      - name: Run and persist status
+        run: |
+          set +e
+          mkdir -p research/factor_regime_sol/allocation_run_status
+          python research/factor_regime_sol/run_factor_allocation_followup.py > research/factor_regime_sol/allocation_run_status/run.log 2>&1
+          echo "$?" > research/factor_regime_sol/allocation_run_status/exit_code.txt
+          cat research/factor_regime_sol/allocation_run_status/run.log
+          exit 0
       - name: Commit results
         run: |
           git config user.name "factor-lab-sol-bot"
           git config user.email "factor-lab-sol-bot@users.noreply.github.com"
-          git add research/factor_regime_sol/results_allocation_followup
+          git add research/factor_regime_sol/results_allocation_followup research/factor_regime_sol/allocation_run_status 2>/dev/null || true
           git commit -m "Run factor regime allocation follow-up" || exit 0
           git pull --rebase origin research/factor-lab-sol
           git push origin HEAD:research/factor-lab-sol
