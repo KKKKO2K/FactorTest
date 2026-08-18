@@ -1,0 +1,41 @@
+name: factor-regime-allocation-followup-sol
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/factor-lab-sol
+    paths:
+      - research/factor_regime_sol/run_factor_allocation_followup.py
+      - .github/workflows/factor-regime-allocation-followup-sol.yml
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/factor-lab-sol
+          fetch-depth: 1
+          sparse-checkout: |
+            research/factor_regime_sol/results
+            research/factor_regime_sol/run_factor_allocation_followup.py
+            .github/workflows
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install numpy pandas
+      - run: python research/factor_regime_sol/run_factor_allocation_followup.py
+      - name: Commit results
+        run: |
+          git config user.name "factor-lab-sol-bot"
+          git config user.email "factor-lab-sol-bot@users.noreply.github.com"
+          git add research/factor_regime_sol/results_allocation_followup
+          git commit -m "Run factor regime allocation follow-up" || exit 0
+          git pull --rebase origin research/factor-lab-sol
+          git push origin HEAD:research/factor-lab-sol
