@@ -9,6 +9,7 @@ on:
       - 'research/factor_regime_action_policy/run_finalist_regime_overlay.py'
       - 'research/factor_regime_action_policy/run_finalist_regime_diagnostics.py'
       - 'research/factor_regime_action_policy/run_finalist_regime_execution.py'
+      - 'research/factor_regime_action_policy/run_high_breadth_feature_diagnostics.py'
   pull_request:
     branches: [ research/factor-lab-v2 ]
     types: [opened, synchronize, reopened, labeled]
@@ -18,6 +19,7 @@ on:
       - 'research/factor_regime_action_policy/run_finalist_regime_overlay.py'
       - 'research/factor_regime_action_policy/run_finalist_regime_diagnostics.py'
       - 'research/factor_regime_action_policy/run_finalist_regime_execution.py'
+      - 'research/factor_regime_action_policy/run_high_breadth_feature_diagnostics.py'
   workflow_dispatch:
 
 permissions:
@@ -77,6 +79,9 @@ jobs:
       - name: Run rebalance-aligned regime execution audit
         working-directory: research/factor_regime_action_policy
         run: python run_finalist_regime_execution.py
+      - name: Run high-breadth feature screen
+        working-directory: research/factor_regime_action_policy
+        run: python run_high_breadth_feature_diagnostics.py
       - name: Commit scratch audit outputs
         run: |
           git config user.name 'github-actions[bot]'
@@ -85,6 +90,7 @@ jobs:
           git add research/factor_regime_action_policy/results/finalist_regime_overlay
           git add research/factor_regime_action_policy/results/finalist_regime_diagnostics
           git add research/factor_regime_action_policy/results/finalist_regime_execution
+          git add research/factor_regime_action_policy/results/high_breadth_feature_diagnostics
           git diff --cached --quiet || git commit -m 'Add connector finalist regime audit results [skip ci]'
           git pull --rebase origin research/connector-friendly-finalist-export
           git push origin HEAD:research/connector-friendly-finalist-export
