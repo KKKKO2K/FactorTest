@@ -35,9 +35,35 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --upgrade numpy pandas
-      - name: Rebuild finalist daily exports
-        working-directory: research/stock_level_factor_interaction
-        run: python run_factor_level_finalists.py
+      - name: Convert existing finalist gzip to connector-friendly CSVs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+
+          root = Path('research/stock_level_factor_interaction/results_factor_level_finalists')
+          parts = sorted((root / 'finalist_daily_returns_parts').glob('finalist_daily_returns.part-*.csv.gz'))
+          if not parts:
+              raise FileNotFoundError('No finalist_daily_returns gzip parts found')
+          daily = pd.concat([pd.read_csv(p) for p in parts], ignore_index=True)
+          out = root / 'daily_returns_text'
+          out.mkdir(parents=True, exist_ok=True)
+          manifest = []
+          for variant, x in daily.groupby('variant', sort=True):
+              x = x.sort_values(['date', 'phase'])
+              path = out / f'{variant}.csv'
+              x.to_csv(path, index=False, encoding='utf-8', lineterminator='\n')
+              manifest.append({
+                  'variant': variant,
+                  'file': path.name,
+                  'rows': len(x),
+                  'date_start': x['date'].min(),
+                  'date_end': x['date'].max(),
+                  'phases': x['phase'].nunique(),
+              })
+          pd.DataFrame(manifest).to_csv(out / 'manifest.csv', index=False, encoding='utf-8', lineterminator='\n')
+          print(f'parts={len(parts)} rows={len(daily):,} variants={len(manifest)}')
+          PY
       - name: Run exact finalist regime overlay audit
         working-directory: research/factor_regime_action_policy
         run: python run_finalist_regime_overlay.py
