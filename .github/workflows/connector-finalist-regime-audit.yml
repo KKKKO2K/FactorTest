@@ -7,6 +7,7 @@ on:
       - '.github/workflows/connector-finalist-regime-audit.yml'
       - 'research/stock_level_factor_interaction/run_factor_level_finalists.py'
       - 'research/factor_regime_action_policy/run_finalist_regime_overlay.py'
+      - 'research/factor_regime_action_policy/run_finalist_regime_diagnostics.py'
   pull_request:
     branches: [ research/factor-lab-v2 ]
     types: [opened, synchronize, reopened, labeled]
@@ -14,6 +15,7 @@ on:
       - '.github/workflows/connector-finalist-regime-audit.yml'
       - 'research/stock_level_factor_interaction/run_factor_level_finalists.py'
       - 'research/factor_regime_action_policy/run_finalist_regime_overlay.py'
+      - 'research/factor_regime_action_policy/run_finalist_regime_diagnostics.py'
   workflow_dispatch:
 
 permissions:
@@ -67,12 +69,16 @@ jobs:
       - name: Run exact finalist regime overlay audit
         working-directory: research/factor_regime_action_policy
         run: python run_finalist_regime_overlay.py
+      - name: Run candidate-specific regime diagnostics
+        working-directory: research/factor_regime_action_policy
+        run: python run_finalist_regime_diagnostics.py
       - name: Commit scratch audit outputs
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add research/stock_level_factor_interaction/results_factor_level_finalists/daily_returns_text
           git add research/factor_regime_action_policy/results/finalist_regime_overlay
+          git add research/factor_regime_action_policy/results/finalist_regime_diagnostics
           git diff --cached --quiet || git commit -m 'Add connector finalist regime audit results [skip ci]'
           git pull --rebase origin research/connector-friendly-finalist-export
           git push origin HEAD:research/connector-friendly-finalist-export
