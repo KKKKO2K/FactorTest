@@ -56,3 +56,5 @@ jobs:
           git commit -m "Run factor allocation NAV backtest" || exit 0
           git pull --rebase origin research/factor-lab-sol
           git push origin HEAD:research/factor-lab-sol
+
+# temporary PR trigger
