@@ -1,0 +1,36 @@
+loading basic
+loaded basic 500
+loaded basic 1000
+loaded basic 1500
+loaded basic 2000
+loaded basic 2500
+building weighted momentum
+built weighted momentum 500/2599
+built weighted momentum 1000/2599
+built weighted momentum 1500/2599
+built weighted momentum 2000/2599
+built weighted momentum 2500/2599
+building ex-ante momentum/revision targets
+built targets 100/466
+built targets 200/466
+built targets 300/466
+built targets 400/466
+simulate K200 MOM_BASE
+simulate K200 RMINUS_TO_REV_ANY
+simulate K200 RMINUS_TO_REV_POS
+simulate KOSPI_EX_K200 MOM_BASE
+simulate KOSPI_EX_K200 RMINUS_TO_REV_ANY
+simulate KOSPI_EX_K200 RMINUS_TO_REV_POS
+simulate KOSPI_ALL MOM_BASE
+simulate KOSPI_ALL RMINUS_TO_REV_ANY
+simulate KOSPI_ALL RMINUS_TO_REV_POS
+simulate KOSDAQ MOM_BASE
+simulate KOSDAQ RMINUS_TO_REV_ANY
+simulate KOSDAQ RMINUS_TO_REV_POS
+simulate KOSPI_KOSDAQ_ALL MOM_BASE
+simulate KOSPI_KOSDAQ_ALL RMINUS_TO_REV_ANY
+simulate KOSPI_KOSDAQ_ALL RMINUS_TO_REV_POS
+simulate KOSDAQ_PLUS_KOSPI_EX_K200 MOM_BASE
+simulate KOSDAQ_PLUS_KOSPI_EX_K200 RMINUS_TO_REV_ANY
+simulate KOSDAQ_PLUS_KOSPI_EX_K200 RMINUS_TO_REV_POS
+done daily=41922 stats=270 paired=180 decisions=8388
