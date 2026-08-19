@@ -19,6 +19,7 @@ from chunked_csv import write_chunked_csv
 
 OUT = Path(__file__).resolve().parent / 'results_factor_level_finalists'
 OUT.mkdir(parents=True, exist_ok=True)
+CONNECTOR_EXPORT_DIR = OUT / 'daily_returns_text'
 
 H = audit.H
 TOPN = audit.TOPN
@@ -117,6 +118,36 @@ def simulate_factor_one(returns, targets, phase, phase_map, meta):
             rec[f'net{bps}_ret'] = (1.0 + gross) * (1.0 - cost) - 1.0
         rows.append(rec)
     return pd.DataFrame(rows)
+
+
+def write_connector_friendly_daily_exports(daily: pd.DataFrame) -> pd.DataFrame:
+    """Write small, plain UTF-8 CSV slices alongside the archival gzip output."""
+    CONNECTOR_EXPORT_DIR.mkdir(parents=True, exist_ok=True)
+    manifest_rows = []
+    for meta in VARIANTS:
+        variant = meta['variant']
+        x = daily[daily['variant'].eq(variant)].sort_values(['date', 'phase']).copy()
+        if x.empty:
+            raise RuntimeError(f'No daily rows for connector export: {variant}')
+        path = CONNECTOR_EXPORT_DIR / f'{variant}.csv'
+        x.to_csv(path, index=False, encoding='utf-8', lineterminator='\n')
+        manifest_rows.append({
+            'variant': variant,
+            'file': path.name,
+            'rows': len(x),
+            'date_start': x['date'].min().date().isoformat(),
+            'date_end': x['date'].max().date().isoformat(),
+            'phases': int(x['phase'].nunique()),
+        })
+
+    manifest = pd.DataFrame(manifest_rows)
+    manifest.to_csv(
+        CONNECTOR_EXPORT_DIR / 'manifest.csv',
+        index=False,
+        encoding='utf-8',
+        lineterminator='\n',
+    )
+    return manifest
 
 
 def cagr(r):
@@ -341,6 +372,7 @@ def main():
     daily = pd.concat(frames, ignore_index=True)
     daily['date'] = pd.to_datetime(daily['date'])
     write_chunked_csv(daily, OUT / 'finalist_daily_returns.csv', index=False, target_mb=40)
+    connector_manifest = write_connector_friendly_daily_exports(daily)
 
     perf = performance_stats(daily)
     perf.to_csv(OUT / 'finalist_phase_performance.csv', index=False)
@@ -355,8 +387,9 @@ def main():
     (OUT / 'FINALIST_SUMMARY.md').write_text(report, encoding='utf-8')
     print(report)
     print(
-        f'daily_rows={len(daily):,}; perf_rows={len(perf):,}; '
-        f'summary_rows={len(summary):,}; overlay_rows={len(overlay_summary):,}'
+        f'daily_rows={len(daily):,}; connector_files={len(connector_manifest):,}; '
+        f'perf_rows={len(perf):,}; summary_rows={len(summary):,}; '
+        f'overlay_rows={len(overlay_summary):,}'
     )
 
 
