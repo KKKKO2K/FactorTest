@@ -9,6 +9,7 @@ on:
       - 'research/factor_regime_action_policy/run_finalist_regime_overlay.py'
   pull_request:
     branches: [ research/factor-lab-v2 ]
+    types: [opened, synchronize, reopened, labeled]
     paths:
       - '.github/workflows/connector-finalist-regime-audit.yml'
       - 'research/stock_level_factor_interaction/run_factor_level_finalists.py'
