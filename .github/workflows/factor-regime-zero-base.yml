@@ -29,6 +29,10 @@ jobs:
         with:
           ref: research/factor-regime-zero-base
           fetch-depth: 1
+          sparse-checkout: |
+            research/factor_regime_v1/results/factor_5d_returns.csv
+            research/factor_regime_zero_base
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
