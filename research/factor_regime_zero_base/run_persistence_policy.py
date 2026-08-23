@@ -94,6 +94,7 @@ def build_predictions(panel: pd.DataFrame) -> pd.DataFrame:
                 score = float(test_score.loc[idx])
                 action = 'TOP2' if score >= q67 else ('BOTTOM2' if score <= q33 else 'EW8')
                 w_policy = weights_for_row(r, action)
+                w_top2 = weights_for_row(r, 'TOP2')
                 rec = {
                     'date': r.date, 'universe': u, 'eval_year': year,
                     'score': score, 'train_q33': float(q33), 'train_q67': float(q67),
@@ -105,9 +106,9 @@ def build_predictions(panel: pd.DataFrame) -> pd.DataFrame:
                     rec[f'{mode.lower()}_gross'] = forward_return(r, w)
                 for j, fac in enumerate(FACTORS):
                     rec[f'w_{fac}'] = float(w_policy[j])
+                    rec[f'top_w_{fac}'] = float(w_top2[j])
                 rows.append(rec)
-    x = pd.DataFrame(rows).sort_values(['universe', 'date']).reset_index(drop=True)
-    return x
+    return pd.DataFrame(rows).sort_values(['universe', 'date']).reset_index(drop=True)
 
 
 def add_costs(path: pd.DataFrame) -> pd.DataFrame:
@@ -121,22 +122,23 @@ def add_costs(path: pd.DataFrame) -> pd.DataFrame:
             turns.append(.5 * float(np.abs(w-prev).sum()))
             prev = w
         g['policy_turnover'] = turns
-        # Baseline top2 turnover is computed from contemporaneous ranking weights.
-        top_turns = []
+
+        TW = g[[f'top_w_{f}' for f in FACTORS]].to_numpy(dtype=float)
         prev = np.zeros(len(FACTORS))
-        for _, r in g.iterrows():
-            w = weights_for_row(r, 'TOP2')
+        top_turns = []
+        for w in TW:
             top_turns.append(.5 * float(np.abs(w-prev).sum()))
             prev = w
         g['top2_turnover'] = top_turns
+
         for cost in COSTS:
             z = g.copy()
             z['cost_bps'] = cost
             z['policy_ret'] = z.policy_gross - z.policy_turnover * cost/10000
             z['top2_ret'] = z.top2_gross - z.top2_turnover * cost/10000
-            # EW8 is static after initial establishment; charge only first rebalance.
-            ew_turn = np.zeros(len(z));
-            if len(ew_turn): ew_turn[0] = .5
+            ew_turn = np.zeros(len(z))
+            if len(ew_turn):
+                ew_turn[0] = .5
             z['ew8_turnover'] = ew_turn
             z['ew8_ret'] = z.ew8_gross - z.ew8_turnover * cost/10000
             out.append(z)
@@ -205,7 +207,8 @@ def report(stats: pd.DataFrame) -> str:
         L += [f'## Cost {cost} bps', '']
         for p in PERIODS:
             q = stats[(stats.cost_bps==cost)&(stats.period==p)]
-            if q.empty: continue
+            if q.empty:
+                continue
             L.append(
                 f'- {p}: median ΔCAGR vs TOP2 {pct(q.delta_cagr_vs_top2.median())}; '
                 f'ΔSharpe {q.delta_sharpe_vs_top2.median():+.3f}; '
