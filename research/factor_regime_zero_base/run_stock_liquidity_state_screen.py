@@ -27,18 +27,21 @@ def build():
  p=pd.read_csv(PANEL);p['date']=pd.to_datetime(p.date)
  l=pd.read_csv(LIQ);l['date']=pd.to_datetime(l.date);l=l.sort_values(['universe','date'])
  l['FACTOR_TOP_MINUS_MKT_ACT5']=l.FACTOR_TOP_ACT5_BREADTH_MEAN-l.MKT_ACT5_BREADTH
- for c in ['MKT_ACT5_BREADTH','MKT_ACT1_BREADTH','KOSDAQ_TA_SHARE','FACTOR_TOP_ACT5_BREADTH_MEAN','FACTOR_TOP_MINUS_MKT_ACT5']:
-  l[f'{c}_CHANGE_4' if c!='KOSDAQ_TA_SHARE' else 'KOSDAQ_TA_SHARE_CHANGE_4']=l.groupby('universe')[c].diff(4)
- # fix generated names to declared schema
- if 'FACTOR_TOP_MINUS_MKT_ACT5_CHANGE_4' not in l.columns:l['FACTOR_TOP_MINUS_MKT_ACT5_CHANGE_4']=l.groupby('universe')['FACTOR_TOP_MINUS_MKT_ACT5'].diff(4)
+ change_map={
+  'MKT_ACT5_BREADTH':'MKT_ACT5_CHANGE_4',
+  'MKT_ACT1_BREADTH':'MKT_ACT1_CHANGE_4',
+  'KOSDAQ_TA_SHARE':'KOSDAQ_TA_SHARE_CHANGE_4',
+  'FACTOR_TOP_ACT5_BREADTH_MEAN':'FACTOR_TOP_ACT5_CHANGE_4',
+  'FACTOR_TOP_MINUS_MKT_ACT5':'FACTOR_TOP_MINUS_MKT_ACT5_CHANGE_4',
+ }
+ for src,dst in change_map.items():l[dst]=l.groupby('universe')[src].diff(4)
  fwd=p[[f'FWD20_{f}' for f in FACTORS]].to_numpy(float);cur=p[[f'CUR20_{f}' for f in FACTORS]].to_numpy(float)
  top_alpha=[];rng=[];rel_loss=[]
  for c,y in zip(cur,fwd):
   o=np.argsort(c);top=o[-2:];ew=float(np.mean(y));ta=float(np.mean(y[top])-ew)
   top_alpha.append(ta);rel_loss.append(-ta);rng.append(float(y.max()-y.min()))
  p['TARGET_TOP2_ALPHA_VS_EW8_20']=top_alpha;p['TARGET_TOP2_RELATIVE_LOSS_20']=rel_loss;p['TARGET_FWD_RANGE_20']=rng
- z=p.merge(l[['date','universe']+FEATURES],on=['date','universe'],how='left')
- return z
+ return p.merge(l[['date','universe']+FEATURES],on=['date','universe'],how='left')
 
 def screen(z):
  rows=[]
