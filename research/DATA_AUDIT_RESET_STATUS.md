@@ -1,105 +1,139 @@
-# Data Audit Reset — Status
+# Data Audit Reset — Corrected Status
 
 ## Scope
-Read-only audit of `source/factor_all_values` on source SHA `02edffa087462a8354c25ee9c80537b64ad1210c`.
+Read-only audit of `source/factor_all_values` on source SHA `02edffa087462a8354c25ee9c80537b64ad1210c`, updated after the user clarified the intended market-cap eligibility rule and point-in-time consensus construction.
+
+## Canonical interpretation after clarification
+The research universe is **not all listed stocks without a size screen**. It is a point-in-time investable universe formed by a market-cap floor, then split into K200 / KOSPI ex-K200 / KOSDAQ and their composites.
+
+The user described the floor as roughly KRW 200bn. Empirical row-set matching across 521 sampled dates shows that the stored factor rows are in fact closest to a **KRW 250bn PIT market-cap cutoff**:
+- 250bn cutoff median row-set Jaccard: 0.9735
+- median precision: 98.77%
+- median recall: 98.84%
+- median factor-only mismatch: 8 names
+- median cutoff-eligible missing factor row: 7 names
+
+By comparison, a 200bn cutoff has median Jaccard 0.8356 and recall 83.76%.
+
+Therefore the canonical universe should be treated as approximately:
+
+> KOSPI/KOSDAQ stocks satisfying the PIT ~KRW 250bn market-cap eligibility screen, with subsequent market/K200 sub-universe splits.
+
+The small residual mismatch near the boundary can reflect exact source timing, security-type rules, or cutoff conventions and should not be interpreted as a broad coverage defect.
 
 ## What is actually present
 - 2,599 dated files per factor/reference dataset, 2016-01-04 through 2026-08-07, with no date gaps versus the basic-info calendar.
-- 8 factor raw-value snapshots: MOM1M, MOM12_1, OP12_REV, OPFY1_REV, PBR12MF, PER12MF, PRIVATE_FLOW, FOREIGN_FLOW.
-- Daily basic info includes market label, K200 flag, adjusted return, market cap.
-- Daily trading amount is present and essentially complete for listed names.
-- A separate daily universe-definition snapshot agrees closely with basic-info K200 membership.
+- 8 point-in-time factor raw-value snapshots: MOM1M, MOM12_1, OP12_REV, OPFY1_REV, PBR12MF, PER12MF, PRIVATE_FLOW, FOREIGN_FLOW.
+- Daily basic info: market label, K200 flag, adjusted daily return, market cap.
+- Daily trading amount: essentially complete for eligible/listed names.
+- Separate daily universe-definition snapshot with K200 membership consistent with basic info.
 
-## Critical finding 1 — factor row universe is not the whole market
-All 8 factor files share essentially the same row universe on a date (median pairwise row-set Jaccard 1.000). Median rows per factor file are ~664 and the row set is extremely close to a same-N top-market-cap screen (median Jaccard 0.978; 98.9% of covered listed names are in the same-N top-mcap set).
+## Correction 1 — prior 'non-K200 coverage defect' conclusion is withdrawn
+The earlier audit compared factor rows against every listed KOSPI/KOSDAQ stock and therefore found only 32.7% row membership in KOSPI ex-K200 and 18.9% in KOSDAQ. That was the wrong denominator for the intended strategy universe.
 
-Median row membership coverage:
-- K200: 100%
-- KOSPI ex-K200: 32.7%
-- KOSDAQ: 18.9%
+Given the PIT market-cap eligibility rule, those omitted smaller stocks are **out of universe by design**. Accordingly:
+- `KOSDAQ` means KOSDAQ names inside the eligible market-cap screen;
+- `KOSPI_EX_K200` means eligible KOSPI names outside K200;
+- composite universes are unions of the eligible sub-universes.
 
-Size structure:
-- KOSPI ex-K200: Q1-Q3 market-cap quintiles have 0% factor row coverage; Q4 partial; Q5 essentially full for momentum/flow.
-- KOSDAQ: Q1-Q4 have 0% factor row coverage; only Q5 is materially covered.
+These are valid full universes **within the strategy's explicit investability screen**.
 
-Therefore prior labels such as `KOSDAQ`, `KOSPI_EX_K200`, or `KOSPI_KOSDAQ_ALL` should not be interpreted as full-market factor tests. They are tests on the factor-covered large/mid-cap subset inside those market definitions.
+## Correction 2 — prior survivorship warning is withdrawn as a primary defect
+The basic-info master is a static/superset row list: later IPOs already appear as rows in early files, while historical market labels/returns/market caps determine whether they are actually eligible at each date.
 
-## Critical finding 2 — fundamental/estimate factors have additional missingness
-Conditional on being in the common factor row universe:
-- K200 valid coverage is ~87-89% for OP revision / PER / PBR.
-- KOSPI ex-K200 and KOSDAQ valid-given-row is only ~50-53% for those factors.
-- Momentum and flow factors are ~98-100% valid conditional on row membership.
+A static superset row master is not survivorship bias by itself. For this research, eligibility is determined point-in-time from market status and market cap. The user further clarified that names that eventually delist are below the investable market-cap cutoff and therefore would not be eligible for the strategy universe.
 
-Thus all-8-factor intersection coverage is much narrower:
-- K200 ~85.5%
-- KOSPI ex-K200 ~15.5%
-- KOSDAQ ~9.3%
+Thus the previous inference from the endpoint master row set to material survivorship bias was an over-interpretation and should not be used as a blocker.
 
-Do not impose the all-8 intersection on single-factor studies unless economically required.
+## Correction 3 — estimate/revision factors are point-in-time
+The user confirmed that the revision factors use the consensus snapshot that was actually available on each historical date. Therefore the earlier request for separate as-of provenance as a prerequisite is removed.
 
-## Critical finding 3 — survivorship / master-universe lineage is not clean
-The basic-info master has exactly 2,557 rows at both endpoints and endpoint row-set Jaccard 1.000. All 907 names that are listed at the final date but were not listed in 2016 already exist as rows in the 2016 master. By contrast only 8 names classified as listed in the first snapshot are not listed at the final snapshot.
+Missing OP revision / PER / PBR values should instead be interpreted mainly as **consensus availability / analyst-coverage missingness**, not as evidence of look-ahead or broken row coverage.
 
-The factor row universe is also extremely persistent: each factor has 664 rows at the first date and 730 at the last date, with 663 of the original 664 rows still present at the endpoint.
+Observed valid-given-eligible-row rates remain economically relevant:
+- K200: roughly 87-89% for OP revision / PER / PBR
+- eligible KOSPI ex-K200 and KOSDAQ: materially lower for consensus-dependent factors
+- Momentum and flow factors are near-complete conditional on eligibility
 
-This structure is consistent with a current/superset security master backfilled through history and raises material survivorship concerns. It is not sufficient to prove every historical membership field is wrong, but it means historical-delisting completeness must be fixed or independently validated before treating long-horizon backtests as survivorship-free.
+For cross-factor research, do not automatically force the all-8-factor intersection. Compare:
+1. each factor on its native valid universe; and
+2. a matched-consensus/common-coverage robustness sample when factor-to-factor comparability matters.
 
-A sanity check is the known historical delisting of Hanjin Shipping (A117930) in 2017: it is not represented among the dataset's eight 2016-listed/final-not-listed names, which confirms at least one historically listed security is absent from the historical universe representation.
+## Sector / industry mapping
+The user supplied a stock-level `WICS업종명(중)` mapping alongside code/name/fiscal year-end.
 
-## What is reliable enough now
-### Strongest
-- Date alignment and daily continuity.
-- Daily adjusted returns, market cap, trading amount for names present in the master.
-- Internal K200 membership consistency between basic info and universe definition.
-- Stock-level factor values for the common large/mid-cap row universe.
+Audit of the supplied mapping:
+- master rows: 2,557
+- distinct nonblank WICS middle-level categories: 29
+- blank WICS labels: 14
 
-### Usable with explicit scope caveat
-- K200 factor research, subject to survivorship/data-lineage validation.
-- Non-K200 research only if renamed/redefined as `factor-covered large/mid-cap subset`, not full KOSPI ex-K200 / KOSDAQ.
+This is sufficient for the initial sector-aware research layer:
+- sector-neutral factor ranks / portfolios;
+- factor alpha attribution into within-sector vs sector-allocation components;
+- sector concentration and sector breadth diagnostics;
+- cross-factor sector exposure overlap.
 
-### Not suitable for full-market claims yet
-- Full KOSDAQ factor results.
-- Full KOSPI ex-K200 factor results.
-- Full KOSPI+KOSDAQ factor selection using the current factor snapshots.
-- Any long-horizon claim that assumes complete historical delisted-security coverage.
+Blank classifications should be retained as `UNKNOWN` rather than dropping the stocks.
 
-## Data required before the next serious reset
-### Priority 0 — required
-1. **Point-in-time complete security master including delisted names**
-   - code, name, security type, listing date, delisting date, market by date, K200 membership by date;
-   - include securities that existed historically even if absent today.
+The supplied mapping appears to be a current/static classification. Historical PIT WICS is optional rather than required for the first research pass; it becomes useful only if historical sector reclassification itself materially affects results.
 
-2. **Full-universe factor snapshots or an explicit documented eligible-universe definition**
-   - ideally every KOSPI/KOSDAQ ordinary share as of each date;
-   - retain NA when a factor is unavailable rather than silently omitting the security row;
-   - if the intended factor universe is top ~700 by market cap, encode that rule explicitly and stop calling it `ALL`.
+## Current data inventory — research-ready
+### Stock/date primitives
+- PIT adjusted daily stock return
+- PIT market cap
+- PIT market / K200 membership
+- daily trading amount
+- 8 PIT factor values
+- current WICS middle-industry mapping
 
-3. **Point-in-time / as-of provenance for estimate-based factors**
-   - exact source-field definitions;
-   - whether historical values are true as-of snapshots or later-restated/backfilled histories;
-   - observation timestamp / publication lag for FY1/12MF estimates and revisions.
+### Eligible universe
+- empirical operating cutoff: ~KRW 250bn PIT market cap
+- sub-universes: K200, eligible KOSPI ex-K200, eligible KOSDAQ, and their composites
 
-### Priority 1 — highest incremental research value
-4. **Point-in-time sector / industry classifications** (WICS/GICS/KRX)
-   - needed to distinguish factor alpha from sector rotation and to run sector-neutral factor portfolios.
+### Time span
+- 2016-01-04 through 2026-08-07
 
-5. **Analyst coverage / estimate breadth / dispersion / revision counts**
-   - especially for OPFY1/OP12, PER/PBR;
-   - lets us distinguish `no signal because no analyst coverage` from a neutral factor value and study factor-confidence directly.
+## Remaining data that would add the most research value
+These are **not prerequisites** for restarting factor research.
 
-6. **Tradability / implementation fields**
-   - free-float market cap or shares, volume, trading-halt/suspension flags, price-limit flags, preferably bid-ask spread or an impact proxy.
+### Highest incremental value
+1. **Analyst coverage / consensus microstructure**
+   - analyst count / estimate count
+   - consensus dispersion
+   - number of upward/downward revisions
+   - age since latest estimate update
+   - useful for distinguishing strong revision information from thin/noisy consensus and for modelling signal confidence.
 
-### Priority 2 — useful for richer factor-selection/crowding work
-7. Raw investor-flow components (foreign, pension, institutional, private, retail) rather than only derived flow factors.
-8. Short-sale / stock-lending balances and utilization for crowding / unwind-risk studies.
-9. Ownership / index / ETF exposure if available, for crowding and mechanical-flow attribution.
-10. Official KOSPI/KOSDAQ/K200 index returns and sector-index returns for cleaner benchmark attribution.
+2. **Earnings realization / event data**
+   - quarterly actual OP/earnings
+   - consensus immediately before result
+   - earnings surprise
+   - earnings announcement date
+   - lets us test whether revision-factor strength reflects genuine information that converts into realized earnings rather than only price-correlated consensus movement.
+
+3. **Raw investor-flow components**
+   - daily foreign / pension / mutual fund / private / retail net buy values or ratios
+   - current factor scores are useful, but raw flows allow persistence, acceleration, breadth, crowding and cross-investor confirmation to be studied without being locked to the existing factor transformation.
+
+4. **Crowding / positioning data**
+   - stock lending balance / utilization
+   - short-sale balance or short-sale value
+   - ownership / ETF-index exposure if available
+   - especially useful for identifying when a statistically strong factor is already crowded and vulnerable to unwind.
+
+### Useful but lower priority
+5. Historical WICS classifications if strict PIT sector-neutralization becomes necessary.
+6. Free-float market cap / free-float shares and trading-halt / price-limit flags for finer implementation modelling; daily trading amount already provides a strong liquidity input.
+7. Official market / sector index return series for benchmark attribution. Market and sector proxies can already be built from the stock panel, so these are convenience/validation data rather than required inputs.
+8. External market-state variables such as rates, FX and volatility indices only if the research question explicitly expands beyond stock/factor information.
 
 ## Research implication
-Before inventing another factor-selection model, the next decision should be one of two clean paths:
+The dataset is much more usable than the first audit interpretation suggested.
 
-- **Path A: accept the current ~top-700 large/mid-cap coverage universe**, rename it explicitly, fix survivorship/as-of issues, and do research only within that scope; or
-- **Path B: rebuild the raw factor snapshots for the full point-in-time KOSPI/KOSDAQ universe**, then restart broad-universe factor research.
+The correct starting point is now:
 
-The second path is necessary if the research question explicitly includes small/mid-cap KOSDAQ and KOSPI ex-K200 behavior.
+> **PIT ~KRW 250bn+ Korean equity universe × 8 factors × daily stock returns/market cap/trading amount × K200/market membership × WICS sector.**
+
+This is sufficient to restart factor-selection research from stock-level primitives without waiting for a rebuilt full-market dataset.
+
+The most important methodological caution is no longer survivorship. It is **factor-dependent signal availability**, especially the much thinner consensus coverage for revision/value factors outside K200. Future research should explicitly distinguish a factor's economic effect from the analyst-coverage universe on which that factor can be observed.
