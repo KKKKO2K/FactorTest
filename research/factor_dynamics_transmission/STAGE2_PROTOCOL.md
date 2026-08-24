@@ -86,6 +86,8 @@ Recompute the augmented-model incremental R² under each false temporal alignmen
 
 At the edge level, compare the observed median incremental R² with the distribution of shifted medians.
 
+The actual alignment passes the placebo check only if its median incremental R² is better than at least 90% of non-zero circular shifts in BOTH Validation and Confirmation (one-sided placebo p <= 0.10 in each period).
+
 This asks whether **the actual time ordering matters**, rather than KOSDAQ merely being a highly correlated proxy for the same common tape.
 
 ## Stress slices
@@ -94,7 +96,7 @@ Report 2025 and 2026, but they cannot create a PASS.
 
 ## Interpretation labels
 
-- `ROBUST_DIRECTIONAL`: primary unique-control gate passes, leave-one-factor-out is stable, and observed temporal alignment is better than most placebo shifts in both Validation and Confirmation.
+- `ROBUST_DIRECTIONAL`: primary unique-control gate passes, leave-one-factor-out is stable, and the time-shift placebo p <= 0.10 in both Validation and Confirmation.
 - `WEAK_DIRECTIONAL`: Stage-1 edge survives some but not all falsification checks.
 - `COMMON_PROXY`: KOSDAQ loses incremental value once ex-K200/common information is controlled.
 - `REJECT`: primary unique-control relation is non-positive or inconsistent across Validation and Confirmation.
