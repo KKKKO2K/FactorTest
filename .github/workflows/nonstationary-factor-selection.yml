@@ -40,11 +40,14 @@ jobs:
       - name: Run all factor-selection methods
         working-directory: research/nonstationary_factor_selection
         run: python run_all_selection_methods.py
+      - name: Run exploratory negative-selection follow-up
+        working-directory: research/nonstationary_factor_selection
+        run: python run_stage_f_negative_selection.py
       - name: Commit research outputs
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/nonstationary_factor_selection/results
+          git add research/nonstationary_factor_selection/results research/nonstationary_factor_selection/results_stage_f_negative_selection
           git diff --cached --quiet || git commit -m 'Add non-stationary factor selection results [skip ci]'
           git pull --rebase origin research/nonstationary-factor-selection
           git push origin HEAD:research/nonstationary-factor-selection
