@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  stage3-cross-factor-network:
+  stage4-pairwise-relative-value:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,14 +37,14 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --upgrade numpy pandas
-      - name: Run Stage 3 cross-factor transmission network
+      - name: Run Stage 4 pairwise relative-value dynamics
         working-directory: research/factor_dynamics_transmission
-        run: python run_stage3_cross_factor_network.py
-      - name: Commit Stage 3 outputs
+        run: python run_stage4_pairwise_relative_value.py
+      - name: Commit Stage 4 outputs
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/factor_dynamics_transmission/results_stage3_cross_factor_network
-          git diff --cached --quiet || git commit -m 'Add Factor Dynamics Stage 3 cross-factor network results [skip ci]'
+          git add research/factor_dynamics_transmission/results_stage4_pairwise_relative_value
+          git diff --cached --quiet || git commit -m 'Add Factor Dynamics Stage 4 pairwise results [skip ci]'
           git pull --rebase origin research/factor-dynamics-transmission
           git push origin HEAD:research/factor-dynamics-transmission
