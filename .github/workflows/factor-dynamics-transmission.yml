@@ -39,7 +39,7 @@ jobs:
       - run: python -m pip install --upgrade numpy pandas
       - name: Run Stage 1 propagation analysis
         working-directory: research/factor_dynamics_transmission
-        run: python run_stage1_propagation.py
+        run: python run_stage1_propagation_entry.py
       - name: Commit Stage 1 outputs
         run: |
           git config user.name 'github-actions[bot]'
