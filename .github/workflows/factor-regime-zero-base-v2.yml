@@ -1,25 +1,10 @@
 name: Factor Regime Zero Base v2
 
 on:
-  push:
-    branches: [ research/factor-regime-zero-base-v2 ]
-    paths:
-      - '.github/workflows/factor-regime-zero-base-v2.yml'
-      - 'research/factor_regime_zero_base_v2/**'
-  pull_request:
-    branches: [ research/factor-lab-v2 ]
-    types: [opened, synchronize, reopened]
-    paths:
-      - '.github/workflows/factor-regime-zero-base-v2.yml'
-      - 'research/factor_regime_zero_base_v2/**'
   workflow_dispatch:
 
 permissions:
   contents: write
-
-concurrency:
-  group: factor-regime-zero-base-v2
-  cancel-in-progress: true
 
 jobs:
   stage3-cross-universe-confirmation:
@@ -39,11 +24,3 @@ jobs:
       - name: Run Stage 3 cross-universe confirmation
         working-directory: research/factor_regime_zero_base_v2
         run: python run_stage3_cross_universe_confirmation.py
-      - name: Commit Stage 3 outputs
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/factor_regime_zero_base_v2/results_stage3_cross_universe_confirmation
-          git diff --cached --quiet || git commit -m 'Add zero-base v2 Stage 3 cross-universe confirmation [skip ci]'
-          git pull --rebase origin research/factor-regime-zero-base-v2
-          git push origin HEAD:research/factor-regime-zero-base-v2
