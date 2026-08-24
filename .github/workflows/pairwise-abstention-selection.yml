@@ -1,0 +1,51 @@
+name: Pairwise Abstention Selection
+
+on:
+  push:
+    branches: [ research/pairwise-abstention-selection-v2 ]
+    paths:
+      - '.github/workflows/pairwise-abstention-selection.yml'
+      - 'research/pairwise_abstention_selection/**'
+  pull_request:
+    branches: [ research/factor-lab-v2 ]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/pairwise-abstention-selection.yml'
+      - 'research/pairwise_abstention_selection/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pairwise-abstention-selection
+  cancel-in-progress: true
+
+jobs:
+  run-pairwise-abstention:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/pairwise-abstention-selection-v2
+          fetch-depth: 1
+          sparse-checkout: |
+            research/factor_regime_v1/results/factor_5d_returns.csv
+            research/nonstationary_factor_selection
+            research/pairwise_abstention_selection
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade numpy pandas
+      - name: Run pairwise abstention analysis
+        working-directory: research/pairwise_abstention_selection
+        run: python run_pairwise_abstention.py
+      - name: Commit research outputs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/pairwise_abstention_selection/results
+          git diff --cached --quiet || git commit -m 'Add pairwise abstention results [skip ci]'
+          git pull --rebase origin research/pairwise-abstention-selection-v2
+          git push origin HEAD:research/pairwise-abstention-selection-v2
