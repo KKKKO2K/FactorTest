@@ -1,0 +1,12 @@
+﻿dataset,n_files,first_date,last_date,missing_dates_vs_basic_within_own_span,extra_dates_vs_basic,missing_date_examples,extra_date_examples
+MOM1M,2599,2016-01-04,2026-08-07,0,0,,
+MOM12_1,2599,2016-01-04,2026-08-07,0,0,,
+OP12_REV,2599,2016-01-04,2026-08-07,0,0,,
+OPFY1_REV,2599,2016-01-04,2026-08-07,0,0,,
+PBR12MF,2599,2016-01-04,2026-08-07,0,0,,
+PER12MF,2599,2016-01-04,2026-08-07,0,0,,
+PRIVATE_FLOW,2599,2016-01-04,2026-08-07,0,0,,
+FOREIGN_FLOW,2599,2016-01-04,2026-08-07,0,0,,
+basic_info,2599,2016-01-04,2026-08-07,0,0,,
+trading_amount,2599,2016-01-04,2026-08-07,0,0,,
+universe_definition,2599,2016-01-04,2026-08-07,0,0,,

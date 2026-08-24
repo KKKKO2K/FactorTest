@@ -1,0 +1,12 @@
+﻿dataset,sampled_files_with_schema,columns
+MOM1M,521,Date|Universe|Factor|StockCode|StockName|FactorValue|ValueStatus|SourceRow
+MOM12_1,521,Date|Universe|Factor|StockCode|StockName|FactorValue|ValueStatus|SourceRow
+OP12_REV,521,Date|Universe|Factor|StockCode|StockName|FactorValue|ValueStatus|SourceRow
+OPFY1_REV,521,Date|Universe|Factor|StockCode|StockName|FactorValue|ValueStatus|SourceRow
+PBR12MF,521,Date|Universe|Factor|StockCode|StockName|FactorValue|ValueStatus|SourceRow
+PER12MF,521,Date|Universe|Factor|StockCode|StockName|FactorValue|ValueStatus|SourceRow
+PRIVATE_FLOW,521,Date|Universe|Factor|StockCode|StockName|FactorValue|ValueStatus|SourceRow
+FOREIGN_FLOW,521,Date|Universe|Factor|StockCode|StockName|FactorValue|ValueStatus|SourceRow
+basic_info,521,"Code|Name|결산월|코스피200 구성종목여부(1:해당, 0:미해당)|상장된 시장|수정주가수익률|시가총액|Unnamed: 7|이전 시가총액"
+trading_amount,521,Code|Name|거래대금(십억원)
+universe_definition,521,Code|Name|ALL|KOSPI|KOSPI200|KOSPI-삼닉
