@@ -6,6 +6,12 @@ on:
     paths:
       - '.github/workflows/data-audit-reset.yml'
       - 'research/data_audit_reset/**'
+  pull_request:
+    branches: [ research/factor-lab-v2 ]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/data-audit-reset.yml'
+      - 'research/data_audit_reset/**'
   workflow_dispatch:
 
 permissions:
