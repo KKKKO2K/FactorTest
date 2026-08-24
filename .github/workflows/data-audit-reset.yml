@@ -40,11 +40,14 @@ jobs:
       - name: Run source data audit
         working-directory: research/data_audit_reset
         run: python run_data_audit.py
+      - name: Run factor coverage bias audit
+        working-directory: research/data_audit_reset
+        run: python run_coverage_bias_audit.py
       - name: Commit audit outputs
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/data_audit_reset/results
+          git add research/data_audit_reset/results research/data_audit_reset/results_coverage_bias
           git diff --cached --quiet || git commit -m 'Add source data audit results [skip ci]'
           git pull --rebase origin research/data-audit-reset
           git push origin HEAD:research/data-audit-reset
