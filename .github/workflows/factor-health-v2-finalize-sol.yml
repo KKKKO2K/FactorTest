@@ -40,3 +40,4 @@ jobs:
           git commit -m "Finalize Factor Health 2.0 summary" || exit 0
           git pull --rebase origin research/factor-lab-sol
           git push origin HEAD:research/factor-lab-sol
+# trigger: finalize-fh2
