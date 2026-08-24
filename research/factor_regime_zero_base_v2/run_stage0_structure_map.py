@@ -259,13 +259,13 @@ def make_report(fdist: pd.DataFrame, ps: pd.DataFrame, xu: pd.DataFrame) -> str:
         "The purpose is to establish which factor-payoff phenomena exist before deciding what to forecast.", "",
         "## Data", "",
         f"- Factors: {', '.join(FACTORS)}",
-        f"- Universes: {ps.universe.nunique()}",
-        f"- Factor return observations: {int(fdist[fdist['sample'].eq('FULL')].n_5d.sum())}", "",
+        f"- Universes: {ps['universe'].nunique()}",
+        f"- Factor return observations: {int(fdist[fdist['sample'].eq('FULL')]['n_5d'].sum())}", "",
         "## Unconditional phenomenon map", "",
     ]
 
     for sample in ["2016_2019", "2020_2022", "2023_2024", "2025", "2026", "FULL"]:
-        q = ps[ps.sample.eq(sample)]
+        q = ps[ps["sample"].eq(sample)]
         if q.empty:
             continue
         lines.append(
