@@ -52,3 +52,4 @@ jobs:
           git commit -m "Run generalized Factor Health 2.0 research" || exit 0
           git pull --rebase origin research/factor-lab-sol
           git push origin HEAD:research/factor-lab-sol
+# trigger: generalized-factor-health-v2
