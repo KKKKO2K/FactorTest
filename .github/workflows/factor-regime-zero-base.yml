@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  stock-liquidity-state:
+  liquidity-permission-policy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,14 +38,14 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --upgrade numpy pandas
-      - name: Run stock liquidity state screen
+      - name: Run stock liquidity permission policy
         working-directory: research/factor_regime_zero_base
-        run: python run_stock_liquidity_state_screen.py
-      - name: Commit stock liquidity outputs
+        run: python run_liquidity_permission_policy.py
+      - name: Commit liquidity permission outputs
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/factor_regime_zero_base/results_stock_liquidity_state
-          git diff --cached --quiet || git commit -m 'Add zero-base stock liquidity state results [skip ci]'
+          git add research/factor_regime_zero_base/results_liquidity_permission_policy
+          git diff --cached --quiet || git commit -m 'Add stock liquidity permission policy results [skip ci]'
           git pull --rebase origin research/factor-regime-zero-base
           git push origin HEAD:research/factor-regime-zero-base
