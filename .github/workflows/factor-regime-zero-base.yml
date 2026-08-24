@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  liquidity-permission-policy:
+  continuous-factor-tilt:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,14 +38,14 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install --upgrade numpy pandas
-      - name: Run stock liquidity permission policy
+      - name: Run bounded continuous factor tilt audit
         working-directory: research/factor_regime_zero_base
-        run: python run_liquidity_permission_policy.py
-      - name: Commit liquidity permission outputs
+        run: python run_continuous_factor_tilt.py
+      - name: Commit continuous tilt outputs
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/factor_regime_zero_base/results_liquidity_permission_policy
-          git diff --cached --quiet || git commit -m 'Add stock liquidity permission policy results [skip ci]'
+          git add research/factor_regime_zero_base/results_continuous_factor_tilt
+          git diff --cached --quiet || git commit -m 'Add continuous factor tilt results [skip ci]'
           git pull --rebase origin research/factor-regime-zero-base
           git push origin HEAD:research/factor-regime-zero-base
