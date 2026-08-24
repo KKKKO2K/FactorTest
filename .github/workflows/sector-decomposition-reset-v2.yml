@@ -6,6 +6,12 @@ on:
     paths:
       - '.github/workflows/sector-decomposition-reset-v2.yml'
       - 'research/sector_decomposition_reset/**'
+  pull_request:
+    branches: [ research/factor-lab-v2 ]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/sector-decomposition-reset-v2.yml'
+      - 'research/sector_decomposition_reset/**'
   workflow_dispatch:
 
 permissions:
