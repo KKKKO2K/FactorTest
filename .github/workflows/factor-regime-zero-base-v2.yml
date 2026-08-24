@@ -1,0 +1,50 @@
+name: Factor Regime Zero Base v2
+
+on:
+  push:
+    branches: [ research/factor-regime-zero-base-v2 ]
+    paths:
+      - '.github/workflows/factor-regime-zero-base-v2.yml'
+      - 'research/factor_regime_zero_base_v2/**'
+  pull_request:
+    branches: [ research/factor-lab-v2 ]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/factor-regime-zero-base-v2.yml'
+      - 'research/factor_regime_zero_base_v2/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: factor-regime-zero-base-v2
+  cancel-in-progress: true
+
+jobs:
+  stage0-structure-map:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/factor-regime-zero-base-v2
+          fetch-depth: 1
+          sparse-checkout: |
+            research/factor_regime_v1/results/factor_5d_returns.csv
+            research/factor_regime_zero_base_v2
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade numpy pandas
+      - name: Run Stage 0 structure map
+        working-directory: research/factor_regime_zero_base_v2
+        run: python run_stage0_structure_map.py
+      - name: Commit Stage 0 outputs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/factor_regime_zero_base_v2/results_stage0_structure
+          git diff --cached --quiet || git commit -m 'Add zero-base v2 Stage 0 structure results [skip ci]'
+          git pull --rebase origin research/factor-regime-zero-base-v2
+          git push origin HEAD:research/factor-regime-zero-base-v2
