@@ -34,7 +34,7 @@ jobs:
       - run: python -m pip install --upgrade numpy pandas
       - name: Build stock-level factor quality panel
         working-directory: research/factor_quality_internals
-        run: python run_stage1_build_quality_panel.py
+        run: python run_stage1_build_quality_panel_float64.py
       - name: Run preregistered incremental quality tests
         working-directory: research/factor_quality_internals
         run: python run_stage2_incremental_quality_test.py
