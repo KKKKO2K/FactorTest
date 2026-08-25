@@ -1,29 +1,24 @@
 # Factor Health: ex-target vs target-inclusive comparison
 
-All HIGH/LOW bins use TRAIN-frozen terciles for an apples-to-apples comparison. Primary lens: future +20D preferred-leg return.
+A/B use discrete-safe breadth thresholds; C uses TRAIN-frozen terciles. Primary lens is future +20D preferred-leg return.
 
-Inclusive identities:
-- A_inc=(3*A_ex + 1[target W+])/4
-- B_inc=(3*B_ex + 1[target W+] - 1[target R-])/4
-- C_inc=(3*C_ex + target continuous health)/4
+Inclusive adds the target own state by construction, so any improvement must be interpreted as self-confirmation, not purely cross-factor information.
 
-Thus any incremental predictive power from inclusive health necessarily comes from the target's own current state/health.
+## Aggregate
 
-## Aggregate comparison across universe x target
-
-| Definition | Sample | Ex median H-L | Inclusive median H-L | Δ median | Ex + share | Inc + share | Inc better |
+| Def | Sample | Ex H-L | Inclusive H-L | Δ | Ex + | Inc + | Inc better |
 |---|---|---:|---:|---:|---:|---:|---:|
 
-## Median H-L by target
+## By target
 
 | Def | Sample | Target | Ex | Inclusive | Δ |
 |---|---|---|---:|---:|---:|
 
 ## Own-state incremental regression
 
-Regression within each universe/target: future top20 ~ standardized ex-target health + standardized own-state component. Below are medians across cells.
+future top20 ~ standardized ex-target health + standardized own component
 
-| Def | Sample | Ex beta/1sd | Own beta/1sd | Own beta positive share |
+| Def | Sample | Ex beta | Own beta | Own positive share |
 |---|---|---:|---:|---:|
 | A | BULL_2025 | +0.49% | +0.42% | 62% |
 | A | POST_2023_2024 | -0.38% | -0.20% | 38% |
