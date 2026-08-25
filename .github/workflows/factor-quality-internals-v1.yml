@@ -1,11 +1,6 @@
 name: Factor Quality Internals V1
 
 on:
-  push:
-    branches: [ research/factor-quality-internals-v1 ]
-    paths:
-      - '.github/workflows/factor-quality-internals-v1.yml'
-      - 'research/factor_quality_internals/**'
   workflow_dispatch:
 
 permissions:
