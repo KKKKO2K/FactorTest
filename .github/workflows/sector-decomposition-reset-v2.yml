@@ -51,11 +51,14 @@ jobs:
       - name: Run sector-confirmed raw winner stage 3
         working-directory: research/sector_decomposition_reset
         run: python run_stage3_confirmation_veto.py
+      - name: Run fixed sector-confirmation portfolio stage 4
+        working-directory: research/sector_decomposition_reset
+        run: python run_stage4_fixed_veto_portfolio.py
       - name: Commit results
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/sector_decomposition_reset/results_stage1 research/sector_decomposition_reset/results_stage2 research/sector_decomposition_reset/results_stage3
-          git diff --cached --quiet || git commit -m 'Add sector confirmation stage 3 results [skip ci]'
+          git add research/sector_decomposition_reset/results_stage1 research/sector_decomposition_reset/results_stage2 research/sector_decomposition_reset/results_stage3 research/sector_decomposition_reset/results_stage4
+          git diff --cached --quiet || git commit -m 'Add fixed sector-confirmation portfolio results [skip ci]'
           git pull --rebase origin research/sector-decomposition-reset-v2
           git push origin HEAD:research/sector-decomposition-reset-v2
