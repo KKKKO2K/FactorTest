@@ -1,6 +1,6 @@
 name: factor-health-inclusive-finalize-sol
 
-# trigger
+# trigger-2
 on:
   workflow_dispatch:
   pull_request:
