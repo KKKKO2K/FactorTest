@@ -71,8 +71,8 @@ def aggregate(hl):
  rows=[]
  for ex,inc,label in PAIRS:
   for sample in SAMPLES:
-   a=hl[(hl.metric==ex)&(hl.sample==sample)&(hl.horizon==20)&(hl.outcome=='top')]
-   b=hl[(hl.metric==inc)&(hl.sample==sample)&(hl.horizon==20)&(hl.outcome=='top')]
+   a=hl[(hl.metric==ex)&(hl['sample']==sample)&(hl.horizon==20)&(hl.outcome=='top')]
+   b=hl[(hl.metric==inc)&(hl['sample']==sample)&(hl.horizon==20)&(hl.outcome=='top')]
    m=a.merge(b,on=['sample','universe','target','horizon','outcome','definition'],suffixes=('_ex','_inc'))
    if m.empty:continue
    rows.append({'definition':label,'sample':sample,'n_pairs':len(m),'ex_median_hl':m.high_minus_low_ex.median(),'inc_median_hl':m.high_minus_low_inc.median(),
@@ -84,8 +84,8 @@ def bytarget(hl):
  for ex,inc,label in PAIRS:
   for sample in SAMPLES:
    for target in sorted(hl.target.unique()):
-    a=hl[(hl.metric==ex)&(hl.sample==sample)&(hl.target==target)&(hl.horizon==20)&(hl.outcome=='top')]
-    b=hl[(hl.metric==inc)&(hl.sample==sample)&(hl.target==target)&(hl.horizon==20)&(hl.outcome=='top')]
+    a=hl[(hl.metric==ex)&(hl['sample']==sample)&(hl.target==target)&(hl.horizon==20)&(hl.outcome=='top')]
+    b=hl[(hl.metric==inc)&(hl['sample']==sample)&(hl.target==target)&(hl.horizon==20)&(hl.outcome=='top')]
     m=a.merge(b,on=['sample','universe','target','horizon','outcome','definition'],suffixes=('_ex','_inc'))
     if m.empty:continue
     rows.append({'definition':label,'sample':sample,'target':target,'n':len(m),'ex_median_hl':m.high_minus_low_ex.median(),'inc_median_hl':m.high_minus_low_inc.median(),'delta':(m.high_minus_low_inc-m.high_minus_low_ex).median()})
